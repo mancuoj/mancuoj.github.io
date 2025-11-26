@@ -1,6 +1,9 @@
 {
-    "title":"Blog Title",
-    "subTitle":"Blog description",
-    "avatarUrl":"https://github.githubassets.com/favicons/favicon.svg",
-    "GMEEK_VERSION":"last"
+    "title":"Mancouj",
+    "subTitle":"People Die, but Long Live GitHub",
+    "avatarUrl":"https://avatars.githubusercontent.com/mancuoj",
+    "faviconUrl":"https://avatars.githubusercontent.com/mancuoj",
+    "GMEEK_VERSION":"last",
+    "onePageListNum":10,
+    "displayTitle":"Mancouj"
 }
