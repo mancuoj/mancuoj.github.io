@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/mancuoj"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="想刷 CS61A 已经很久了。">
+<meta property="og:title" content="CS61A 通关感想">
+<meta property="og:description" content="想刷 CS61A 已经很久了。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://mancuoj.github.io/post/CS61A%20-tong-guan-gan-xiang.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/mancuoj">
+<title>CS61A 通关感想</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">CS61A 通关感想</h1>
+<div class="title-right">
+    <a href="https://mancuoj.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/mancuoj/mancuoj.github.io/issues/2" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><p>想刷 CS61A 已经很久了。记得考研前就想着做一下这个课，仓库 <a href="https://github.com/csfive/CS61A">csfive/CS61A</a> 第一次提交是在 2023 年 8 月 25 日，但真正开始认真学，其实已经是 2026 年过年前了。中间零零散散拖了三四年，到工作几年以后才把它完成，说起来还是有点羞愧。</p>
+<p>这门课在网上评价一直很高。很多人会说 CS61A 不是一门单纯的 Python 课，而是借 Python、Scheme、SQL 去讲抽象、递归、函数式编程、解释器这些更底层的东西。CS 自学社区里也有人说它的重点是“以语言为载体，教编程语言中的通性与设计逻辑”，尤其 Scheme Interpreter 是对课程内容的总结。CS61A 官方的前学生建议里也反复提到，这门课对没有编程经验的人会很有挑战、很耗时间。对我来说，感受倒没有那么传奇，但也确实能理解为什么它被很多人推荐。</p>
+<p>AI 出现以后，我的工作强度又下降了一大截。实在无聊的时候，我就在工作间隙通过 GitHub Codespaces 刷起了这门搁置已久的课。看提交记录也挺明显：2023 年开了个头，2024 年偶尔动一下，2025 年又断了一次，真正密集推进是在 2026 年 1 月。1 月做了 Hog、Cats，4 月重新开始 Ants，5 月补了一些后面的内容，6 月 3 日、4 日把 Scheme 前置内容和 Lab/Homework 集中推进，最后 6 月 8 日提交了 finish all。从“想学”到“学完”，跨度离谱；从“重新开始”到“完成”，也断断续续拖了差不多半年。</p>
+<p>我这次学得其实很功利。课程视频和教材基本没怎么看，很多时候就是打开题目，理解一下要求，然后奔着过测试去写代码。Python 语法我本来就比较熟，所以前半部分基本没有卡壳。Hog、Cats、Ants 这些项目做起来都还算顺，更多是耐心问题，不是理解问题。对我来说，最大的敌人不是难度，而是拖延。</p>
+<p>所以如果问我学习成果有没有别人吹得那么厉害，我的答案可能是：没有那么夸张。至少以我这种刷题式学习方法来看，它没有带来什么“程序员世界观重塑”的体验。很多知识我以前已经接触过，很多题也只是把递归、抽象、状态、对象这些概念重新练了一遍。但它确实让我对递归的理解更深了一点。以前写递归更多是凭经验，现在会更自然地去想 base case、recursive call、当前层该承担什么责任。网上也有人把递归理解总结成 base case、递归调用和把结果接起来这几步，我做完以后确实更能体会这种思路。</p>
+<p>Scheme 是我卡得最多的地方。这个语法看得我脑袋疼，一堆括号，一开始很不适应。更痛苦的是最后一个 project：写一个 Scheme Interpreter。代码量看起来不大，但要读的框架代码很多，要搞清楚 reader、eval、apply、environment、special form、lambda、macro 这些东西怎么串起来。网上很多人说这个项目“吹爆”，说它能把课程前面的抽象全部收束起来；从客观上讲，我认可这个评价。但从个人体验上讲，它也刚好踩中了我的痛点。我是一个讨厌 debug、讨厌读别人代码的人，而这个项目偏偏要求你耐着性子读框架、理解控制流、在已有结构里补逻辑。最后当然是完成了，但完成得比较草草，更多是“终于结束了”。</p>
+<p>不过回头看，CS61A 的课程设计确实很强。它不是按“教会一门语言”的方式组织的，而是不断把你往更抽象的层次推：先用 Python 写函数和递归，再讲数据抽象、对象、可变状态，然后切到 Scheme 和解释器。它厉害的地方不在于某一道题多难，而在于它一直让你看到：语言只是表面，真正重要的是程序如何表达计算，如何组织复杂度，如何把一个问题拆成可组合的抽象。</p>
+<p>对我来说，这门课最大的意义不是“学会了 Python”，也不是“掌握了 Scheme”，而是终于把一个拖了几年的坑填上了。它没有改变我的人生，也没有让我突然变成更高级的程序员，但它给了我一次比较完整的编程基本功复健。尤其是递归、解释器、抽象这几块，哪怕我是用很功利的方式刷过去的，也还是留下了一些东西。</p>
+<p>如果有人问我 CS61A 值不值得刷，我会说：值得，但别神化。它对新手可能很难，对有经验的人可能没那么震撼；认真看视频和教材的人，收获肯定比我这种只写题过测试的人大。如果只是为了“刷完一门名课”，那它可能不会自动带来什么质变；但如果愿意认真跟着教材、视频和项目走一遍，它确实是一门很适合打基础的课。尤其是对递归、抽象、解释器这些东西还比较陌生的人，CS61A 的训练密度和课程设计都很扎实。</p>
+<p>我的完成方式其实不太值得推荐：视频没怎么看，教材也跳得很多，基本是靠题目和测试驱动自己往前走。这样效率高，但也会错过不少课程真正想讲的东西。所以这篇感想与其说是“CS61A 学习心得”，不如说是“一个拖延症老程序员终于把坑填完了”的记录。</p>
+<blockquote>
+<p>注：本文主体内容由本人撰写，AI 辅助进行了结构整理、措辞优化和少量补充。</p>
+</blockquote></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://mancuoj.github.io">Mancouj</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","mancuoj/mancuoj.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+
+
+</script>
+
+
+</html>
