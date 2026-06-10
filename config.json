@@ -2,5 +2,8 @@
   "title": "Mancouj",
   "subTitle": "People Die, but Long Live GitHub",
   "avatarUrl": "https://avatars.githubusercontent.com/mancuoj",
-  "GMEEK_VERSION": "last"
+  "GMEEK_VERSION": "last",
+  "email": "mancuoj@gmail.com",
+  "showPostSource": 1,
+  "urlMode": "issue",
 }
