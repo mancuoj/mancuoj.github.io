@@ -1,26 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Fri, 26 Jun 2026 02:31:08 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.06</title><link>https://mancuoj.github.io/post/3.html</link><description>## 工作
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Tue, 30 Jun 2026 01:52:46 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.06</title><link>https://mancuoj.github.io/post/3.html</link><description>## 学习
 
-- 无语，无聊，无需求
-- 上班 == 看小说 == 刷视频
-
-## 学习
+&gt; 前半个月还是挺能学的，后面就懈怠了
 
 - CS61A 完结撒花，囫囵吞枣，拖了这么久（2022-2026），也算完成了一个夙愿
-- Nand2Tetris 完成了第五章、第六章、第七章、
-- CS50G 完成了第三周的三消、第四周的马里奥、
-- https://lobste.rs/s/8ugoxw/your_favorite_pieces_technical_writing
-- https://lobste.rs/s/eulydi/which_programming_resource_changed_your
+- Nand2Tetris 完成了第五章和第六章
+- CS50G 完成了第三周的三消
 - https://lintsinghua.github.io
 - https://book-refactoring2.ifmicro.com/docs
 - https://learn.shareai.run/zh/
+- https://lobste.rs/s/8ugoxw/your_favorite_pieces_technical_writing
+- https://lobste.rs/s/eulydi/which_programming_resource_changed_your
 
 ## 生活
 
-- 老是咳嗽还有痰，感觉是五月的咳嗽喉咙疼的后遗症，令人烦躁
+- 老是咳嗽还有痰，感觉是五月的咳嗽喉咙疼的后遗症
 - 看了瓦伦敦大师赛的大部分赛程直播，EDG 可惜，康神还是没把握住，还得是青春风暴 😭
 - 看了几把胶黏的 CS Major 比赛，Niko 终于拿了冠军，就在今天！
-- 端午节三天好快，感觉睡了一天半
+- 端午节三天过得好快，感觉睡了一天半
 - 月末摔了一个屁股墩，尾骨疼了好几天，倒霉倒霉倒霉
 - 天天下雨的上海真是恶心
 
@@ -28,17 +25,17 @@
 
 &gt; 找个能看的网文好难，找个好玩的联机游戏更难
 
-- 游戏固定的 LOL 海斗 + 灵排
+- 游戏《LOL》固定的每日海斗 + 周末灵排
 - 小说《噬恶演武，诸天除魔》，连载中，无限流爽文
 - 小说《以神通之名》，连载中，套着超能力的官场文
 - 小说《重生之神级学霸》，已完结，志鸟村的老书了，之前没看进去，不过大医凌然和国民法医都看完了，这次重新试试毒，把憋屈的部分全部跳过，只看有趣的部分
 - 游戏《逃出生天》，双人成行制作组的前作，挺好，就是没有中文，加速器带的汉化跟 shit 一样
-- Steam 新品节玩了几个增量和幸存者游戏的 Demo，老了只能玩这种短平快爽的游戏
+- 《Steam 新品节》玩了几个增量、清理、幸存者游戏的 Demo，短平快爽
 - 小说《走进修仙》，已完结，科学修仙，看一半弃了
 - 小说《王牌进化》，已完结，传统无限流，副本基本是街机游戏，对不上电波，没啥看的再继续看
 - 小说《宰执天下》，已完结，北宋穿越文
-- 
 
 ## 下个月
 
-- 。</description><guid isPermaLink="true">https://mancuoj.github.io/post/3.html</guid><pubDate>Wed, 10 Jun 2026 15:13:07 +0000</pubDate></item><item><title>CS61A 通关感想</title><link>https://mancuoj.github.io/post/2.html</link><description>拖了三年多，总算把 [CS61A](https://github.com/csfive/CS61A) 刷完了。</description><guid isPermaLink="true">https://mancuoj.github.io/post/2.html</guid><pubDate>Wed, 10 Jun 2026 03:32:40 +0000</pubDate></item></channel></rss>
+- 完成 Nand2Tetris
+- 尽量完成 CS50G。</description><guid isPermaLink="true">https://mancuoj.github.io/post/3.html</guid><pubDate>Wed, 10 Jun 2026 15:13:07 +0000</pubDate></item><item><title>CS61A 通关感想</title><link>https://mancuoj.github.io/post/2.html</link><description>拖了三年多，总算把 [CS61A](https://github.com/csfive/CS61A) 刷完了。</description><guid isPermaLink="true">https://mancuoj.github.io/post/2.html</guid><pubDate>Wed, 10 Jun 2026 03:32:40 +0000</pubDate></item></channel></rss>
