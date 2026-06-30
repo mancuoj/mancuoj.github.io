@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Tue, 30 Jun 2026 01:52:46 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.06</title><link>https://mancuoj.github.io/post/3.html</link><description>## 学习
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Tue, 30 Jun 2026 02:16:20 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.06</title><link>https://mancuoj.github.io/post/3.html</link><description>## 学习
 
-&gt; 前半个月还是挺能学的，后面就懈怠了
+&gt; 前半个月还是学了挺多的，后面就懈怠了
 
 - CS61A 完结撒花，囫囵吞枣，拖了这么久（2022-2026），也算完成了一个夙愿
 - Nand2Tetris 完成了第五章和第六章
@@ -38,4 +38,5 @@
 ## 下个月
 
 - 完成 Nand2Tetris
-- 尽量完成 CS50G。</description><guid isPermaLink="true">https://mancuoj.github.io/post/3.html</guid><pubDate>Wed, 10 Jun 2026 15:13:07 +0000</pubDate></item><item><title>CS61A 通关感想</title><link>https://mancuoj.github.io/post/2.html</link><description>拖了三年多，总算把 [CS61A](https://github.com/csfive/CS61A) 刷完了。</description><guid isPermaLink="true">https://mancuoj.github.io/post/2.html</guid><pubDate>Wed, 10 Jun 2026 03:32:40 +0000</pubDate></item></channel></rss>
+- 尽量完成 CS50G
+- 捡起 HUST-CPU。</description><guid isPermaLink="true">https://mancuoj.github.io/post/3.html</guid><pubDate>Wed, 10 Jun 2026 15:13:07 +0000</pubDate></item><item><title>CS61A 通关感想</title><link>https://mancuoj.github.io/post/2.html</link><description>拖了三年多，总算把 [CS61A](https://github.com/csfive/CS61A) 刷完了。</description><guid isPermaLink="true">https://mancuoj.github.io/post/2.html</guid><pubDate>Wed, 10 Jun 2026 03:32:40 +0000</pubDate></item></channel></rss>
