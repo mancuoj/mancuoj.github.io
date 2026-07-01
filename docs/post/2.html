@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
-    
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css' rel='stylesheet'><style>:root,[data-color-mode='light']{--kami-parchment:#f5f4ed;--kami-ivory:#faf9f5;--kami-warm-sand:#e8e6dc;--kami-brand:#1B365D;--kami-brand-light:#2D5A8A;--kami-near-black:#141413;--kami-dark-warm:#3d3d3a;--kami-olive:#504e49;--kami-stone:#6b6a64;--kami-border:#e8e6dc;--kami-border-soft:#e5e3d8}[data-color-mode='dark']{--kami-parchment:#141413;--kami-ivory:#30302e;--kami-warm-sand:#3d3d3a;--kami-brand:#2D5A8A;--kami-brand-light:#4A7DB5;--kami-near-black:#e8e6dc;--kami-dark-warm:#c8c6bb;--kami-olive:#a8a69e;--kami-stone:#7a7872;--kami-border:#3d3d3a;--kami-border-soft:#30302e}html body{background:var(--kami-parchment)!important;color:var(--kami-near-black);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC','Noto Sans SC',sans-serif}html body a{color:var(--kami-brand)}html body #header{border-bottom-color:var(--kami-border)!important}html body #footer{color:var(--kami-stone)}</style>
     <link rel="icon" href="https://avatars.githubusercontent.com/mancuoj"><script>
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
@@ -43,7 +43,219 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 </style>
+/* ===== KAMI THEME · 纸 ===== */
+/* Inspired by tw93/Kami design system */
+/* Warm parchment canvas, ink-blue accent, serif hierarchy */
 
+/* ---------- CSS Variables ---------- */
+:root,
+[data-color-mode='light'] {
+  --kami-parchment: #f5f4ed;
+  --kami-ivory: #faf9f5;
+  --kami-warm-sand: #e8e6dc;
+  --kami-brand: #1B365D;
+  --kami-brand-light: #2D5A8A;
+  --kami-near-black: #141413;
+  --kami-dark-warm: #3d3d3a;
+  --kami-olive: #504e49;
+  --kami-stone: #6b6a64;
+  --kami-border: #e8e6dc;
+  --kami-border-soft: #e5e3d8;
+}
+[data-color-mode='dark'] {
+  --kami-parchment: #141413;
+  --kami-ivory: #30302e;
+  --kami-warm-sand: #3d3d3a;
+  --kami-brand: #2D5A8A;
+  --kami-brand-light: #4A7DB5;
+  --kami-near-black: #e8e6dc;
+  --kami-dark-warm: #c8c6bb;
+  --kami-olive: #a8a69e;
+  --kami-stone: #7a7872;
+  --kami-border: #3d3d3a;
+  --kami-border-soft: #30302e;
+}
+
+/* ---------- Base ---------- */
+body {
+  background: var(--kami-parchment) !important;
+  color: var(--kami-near-black);
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, h4, h5, h6,
+.postTitle {
+  font-family: 'LXGW WenKai', 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', Georgia, Charter, serif !important;
+  font-weight: 500;
+  color: var(--kami-near-black);
+  line-height: 1.25;
+}
+h1 { font-size: 1.75em; }
+h2 { font-size: 1.4em; margin-top: 1.5em; }
+h3 { font-size: 1.15em; }
+
+.postTitle {
+  font-size: 2em !important;
+  font-weight: 500 !important;
+}
+
+/* ---------- Links ---------- */
+a {
+  color: var(--kami-brand);
+}
+a:hover {
+  color: var(--kami-brand-light);
+  text-decoration: underline;
+}
+
+/* ---------- Header ---------- */
+#header {
+  border-bottom: 1px solid var(--kami-border) !important;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+
+/* ---------- Post Body (markdown-body) ---------- */
+.markdown-body {
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--kami-near-black);
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  font-family: 'LXGW WenKai', 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', Georgia, Charter, serif !important;
+  border-bottom: none !important;
+  font-weight: 500;
+  color: var(--kami-near-black);
+}
+.markdown-body h1 { font-size: 1.75em; margin-top: 1.5em; }
+.markdown-body h2 {
+  font-size: 1.4em;
+  margin-top: 1.6em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--kami-border-soft) !important;
+}
+.markdown-body h3 { font-size: 1.15em; margin-top: 1.4em; }
+
+.markdown-body p {
+  margin-bottom: 1em;
+  line-height: 1.65;
+}
+
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--kami-near-black);
+}
+
+/* ---------- Blockquote ---------- */
+.markdown-body blockquote {
+  border-left: 2.5pt solid var(--kami-brand);
+  padding: 4pt 0 4pt 14pt;
+  color: var(--kami-olive);
+  background: transparent;
+  margin: 1em 0;
+}
+
+/* ---------- Code ---------- */
+.markdown-body code {
+  font-family: 'LXGW WenKai Mono', 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, Monaco, monospace;
+  background: var(--kami-ivory);
+  border: 0.5pt solid var(--kami-border-soft);
+  border-radius: 3px;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+  color: var(--kami-dark-warm);
+}
+.markdown-body pre {
+  background: var(--kami-ivory) !important;
+  border: 0.5pt solid var(--kami-border);
+  border-radius: 6pt;
+  padding: 12pt 14pt;
+}
+.markdown-body pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ---------- Tables ---------- */
+.markdown-body table {
+  border-collapse: collapse;
+}
+.markdown-body table th {
+  font-weight: 500;
+  color: var(--kami-dark-warm);
+  border-bottom: 1pt solid var(--kami-border);
+}
+.markdown-body table td,
+.markdown-body table th {
+  border-color: var(--kami-border-soft);
+}
+.markdown-body table tr {
+  background: transparent;
+  border-top: 0.3pt solid var(--kami-border-soft);
+}
+.markdown-body table tr:nth-child(2n) {
+  background: var(--kami-ivory);
+}
+
+/* ---------- Horizontal Rule ---------- */
+.markdown-body hr {
+  height: 0.5pt;
+  background: var(--kami-border);
+  border: none;
+}
+
+/* ---------- Post Body Border ---------- */
+#postBody {
+  border-bottom: 1px solid var(--kami-border) !important;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  border-color: var(--kami-border);
+}
+.btn:hover {
+  background: var(--kami-warm-sand);
+}
+
+/* ---------- Footer ---------- */
+#footer {
+  color: var(--kami-stone);
+  font-size: 0.85em;
+}
+#footer a {
+  color: var(--kami-stone);
+  text-decoration: none;
+}
+#footer a:hover {
+  color: var(--kami-brand);
+}
+
+/* ---------- Dark Mode Primer Overrides ---------- */
+[data-color-mode='dark'] .markdown-body {
+  color: var(--kami-near-black);
+}
+[data-color-mode='dark'] .markdown-body code {
+  background: var(--kami-ivory);
+  color: var(--kami-dark-warm);
+}
+[data-color-mode='dark'] .markdown-body pre {
+  background: var(--kami-ivory) !important;
+}
+
+/* ---------- Smooth Transitions ---------- */
+body, .markdown-body, #header, #footer, a, .btn, code, pre, blockquote {
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
 
 
 
