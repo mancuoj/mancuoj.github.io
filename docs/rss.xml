@@ -1,9 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Fri, 03 Jul 2026 01:25:04 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.07</title><link>https://mancuoj.github.io/post/4.html</link><description>## 学习
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Mancouj</title><link>https://mancuoj.github.io</link><description>People Die, but Long Live GitHub</description><copyright>Mancouj</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/mancuoj</url><title>avatar</title><link>https://mancuoj.github.io</link></image><lastBuildDate>Fri, 03 Jul 2026 08:33:31 +0000</lastBuildDate><managingEditor>Mancouj</managingEditor><ttl>60</ttl><webMaster>Mancouj</webMaster><item><title>月度札记｜2026.07</title><link>https://mancuoj.github.io/post/4.html</link><description>## 学习
+
+- https://github.com/ryanmcdermott/clean-code-javascript
 
 ## 生活
 
 ## 娱乐
+
+- 游戏《LOL》新出的周末 5v5 排位 + 每天下班的海斗
 
 ## 下个月。</description><guid isPermaLink="true">https://mancuoj.github.io/post/4.html</guid><pubDate>Wed, 01 Jul 2026 08:09:31 +0000</pubDate></item><item><title>月度札记｜2026.06</title><link>https://mancuoj.github.io/post/3.html</link><description>## 学习
 
