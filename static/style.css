@@ -231,6 +231,25 @@ a {
   margin-bottom: 9px;
 }
 
+/* 标题旁的回 issue 图标 */
+.post-source {
+  display: inline-flex;
+  vertical-align: -0.1em;
+  margin-left: 0.42em;
+  color: var(--faint);
+  transition: color 0.16s ease;
+}
+
+.post-source:hover {
+  color: var(--accent);
+}
+
+.post-source svg {
+  display: block;
+  width: 0.85em;
+  height: 0.85em;
+}
+
 .post-meta {
   display: flex;
   flex-wrap: wrap;
@@ -556,121 +575,6 @@ a {
   color: #ffa657;
 }
 
-/* --- 评论 ---------------------------------------------------------------- */
-.comments {
-  margin-top: 40px;
-}
-
-.comments-actions {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.issue-link {
-  color: var(--muted);
-  font-size: 0.8rem;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
-  transition: color 0.16s ease, text-decoration-color 0.16s ease;
-}
-
-.issue-link:hover {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
-}
-
-/* 加载态：转圈 + 预留高度，避免点击后页面突然撑开 */
-#comments {
-  position: relative;
-}
-
-#comments.is-loading {
-  min-height: 260px;
-}
-
-.comments-loading {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid var(--hair);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* 评论内容就绪后淡入 */
-iframe.utterances-frame {
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-iframe.utterances-frame.is-ready {
-  opacity: 1;
-}
-
-.comments-fail {
-  padding: 12px 0;
-  color: var(--muted);
-  font-size: 0.8rem;
-  transition: opacity 200ms var(--ease-out);
-}
-
-@starting-style {
-  .comments-fail {
-    opacity: 0;
-  }
-}
-
-.comment-btn {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
-  transition: color 0.16s ease, text-decoration-color 0.16s ease, opacity 120ms var(--ease-out);
-}
-
-.comment-btn:hover:not(:disabled) {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
-}
-
-.comment-btn:active:not(:disabled) {
-  opacity: 0.6;
-}
-
-.comment-btn:disabled {
-  cursor: default;
-  opacity: 0.6;
-  text-decoration: none;
-}
-
 /* --- 404 ---------------------------------------------------------------- */
 .notfound {
   font-family: var(--display);
@@ -719,11 +623,4 @@ iframe.utterances-frame.is-ready {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* --- 减少动效: 只放缓持续旋转, 保留 color/opacity 反馈 -------------------- */
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation-duration: 2s;
-  }
 }

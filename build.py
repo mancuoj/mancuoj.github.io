@@ -241,7 +241,6 @@ class Builder:
                     "year": created.strftime("%Y"),
                     "url": f"{self.base}/post/{issue['number']}.html",
                     "source": issue["html_url"],
-                    "comments": issue.get("comments", 0),
                     "pinned": pinned,
                     "tags": [
                         {"name": n, "slug": slugify(n)}

@@ -7,19 +7,6 @@
     return root.getAttribute("data-theme") || "light";
   }
 
-  function utterancesName(theme) {
-    return theme === "dark" ? "github-dark" : "github-light";
-  }
-
-  function utterancesTheme(theme) {
-    var frame = document.querySelector("iframe.utterances-frame");
-    if (!frame || !frame.contentWindow) return;
-    frame.contentWindow.postMessage(
-      { type: "set-theme", theme: utterancesName(theme) },
-      "https://utteranc.es"
-    );
-  }
-
   /* --- 主题切换（只在主页 Elsewhere 的文字按钮） ------------------------ */
   var switcher = document.getElementById("theme-switch");
   if (switcher) {
@@ -34,57 +21,6 @@
         localStorage.setItem("theme", next);
       } catch (e) {}
       syncLabel();
-      utterancesTheme(next);
-    });
-  }
-
-  /* --- 评论: 点击后加载, 带加载态与淡入 --------------------------------- */
-  var box = document.getElementById("comments");
-  var btn = document.getElementById("load-comments");
-  if (box && btn) {
-    btn.addEventListener("click", function () {
-      btn.remove();
-
-      var loader = document.createElement("div");
-      loader.className = "comments-loading";
-      loader.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>加载评论…</span>';
-      box.classList.add("is-loading");
-      box.appendChild(loader);
-
-      var s = document.createElement("script");
-      s.src = "https://utteranc.es/client.js";
-      s.setAttribute("repo", btn.dataset.repo);
-      s.setAttribute("issue-number", btn.dataset.issue);
-      s.setAttribute("theme", utterancesName(currentTheme()));
-      s.setAttribute("crossorigin", "anonymous");
-      s.async = true;
-      s.onerror = function () {
-        box.classList.remove("is-loading");
-        loader.remove();
-        var fail = document.createElement("p");
-        fail.className = "comments-fail";
-        fail.textContent = "评论加载失败，请刷新页面重试。";
-        box.appendChild(fail);
-      };
-      box.appendChild(s);
-
-      /* 等 iframe 渲染且高度稳定后再撤加载态，内容再淡入，避免塌陷/闪回 */
-      var tries = 0;
-      var last = -1;
-      var timer = setInterval(function () {
-        var frame = box.querySelector("iframe.utterances-frame");
-        var h = frame ? Math.round(frame.getBoundingClientRect().height) : 0;
-        var ready = !!frame && h > 100 && h === last;
-        var giveUp = ++tries > 140;
-        if (ready || giveUp) {
-          clearInterval(timer);
-          if (frame) frame.classList.add("is-ready");
-          box.classList.remove("is-loading");
-          loader.remove();
-          return;
-        }
-        last = h;
-      }, 120);
     });
   }
 
