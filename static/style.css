@@ -444,7 +444,7 @@ a {
 .markdown-body .markdown-alert {
   margin: 22px 0;
   padding: 0.5em 1em;
-  border-left: 2px solid var(--fg-faint, var(--faint));
+  border-left: 2px solid var(--faint);
   color: var(--muted);
 }
 

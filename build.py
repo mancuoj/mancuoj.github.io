@@ -2,7 +2,7 @@
 """极简 GitHub Issues 博客生成器.
 
 用法:
-    python build.py [--out docs] [--drafts]
+    python build.py [--out docs] [--config config.json] [--base URL]
 
 数据来源: GitHub Issues (open 状态, 排除 Pull Request)。
 产物: 静态 HTML / RSS / sitemap, 默认输出到 docs/。
@@ -43,7 +43,6 @@ FONTCACHE = ROOT / ".fontcache"
 LATIN_FONTS = {
     ("Open Runde", 400): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-400-normal.woff2",
     ("Open Runde", 500): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-500-normal.woff2",
-    ("Open Runde", 600): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-600-normal.woff2",
     ("Syne", 700): "https://cdn.jsdelivr.net/npm/@fontsource/syne/files/syne-latin-700-normal.woff2",
 }
 CJK_FAMILY = "LXGW WenKai Screen"
@@ -267,11 +266,7 @@ class Builder:
         post_dir = self.out / "post"
         post_dir.mkdir(parents=True, exist_ok=True)
         for post in posts:
-            html_out = self.render(
-                "post.html",
-                post=post,
-                page={"title": post["title"], "description": post["excerpt"]},
-            )
+            html_out = self.render("post.html", post=post)
             (post_dir / f"{post['number']}.html").write_text(html_out, encoding="utf-8")
 
     @staticmethod
@@ -284,24 +279,15 @@ class Builder:
         return groups
 
     def build_index(self, posts: list[dict]) -> None:
-        html_out = self.render(
-            "index.html",
-            groups=self.group_by_year(posts),
-            page={"title": self.cfg["title"], "description": self.cfg["description"]},
-        )
+        html_out = self.render("index.html", groups=self.group_by_year(posts))
         (self.out / "index.html").write_text(html_out, encoding="utf-8")
 
     def build_tags(self, posts: list[dict], tags: list[dict]) -> None:
-        html_out = self.render(
-            "tags.html",
-            posts=posts,
-            tags=tags,
-            page={"title": f"标签 · {self.cfg['title']}", "description": "全部文章与标签"},
-        )
+        html_out = self.render("tags.html", posts=posts, tags=tags)
         (self.out / "tags.html").write_text(html_out, encoding="utf-8")
 
     def build_404(self) -> None:
-        html_out = self.render("404.html", page={"title": "404", "description": ""})
+        html_out = self.render("404.html")
         (self.out / "404.html").write_text(html_out, encoding="utf-8")
 
     def build_rss(self, posts: list[dict]) -> None:
