@@ -3,7 +3,6 @@
   "subtitle": "People Die, but Long Live GitHub",
   "description": "People Die, but Long Live GitHub",
   "author": "mancuoj",
-  "email": "mancuoj@gmail.com",
   "avatar": "https://avatars.githubusercontent.com/mancuoj",
   "repo": "mancuoj/mancuoj.github.io",
   "homeUrl": "https://mancuoj.github.io",
@@ -23,6 +22,5 @@
     { "label": "GitHub", "url": "https://github.com/mancuoj" },
     { "label": "Email", "url": "mailto:mancuoj@gmail.com" }
   ],
-  "footer": "",
-  "startSite": ""
+  "footer": ""
 }
