@@ -34,25 +34,10 @@
 {% if cfg.showComments %}
 <section class="comments">
   <h2 class="comments-title">评论</h2>
-  <script src="https://utteranc.es/client.js"
-    repo="{{ cfg.commentsRepo }}"
-    issue-number="{{ post.number }}"
-    theme="github-light"
-    crossorigin="anonymous"
-    async>
-  </script>
-  <script>
-    /* 在 client.js 执行前按当前主题写好 theme，避免先亮后暗的闪白 */
-    (function () {
-      var s = document.querySelector('script[src*="utteranc.es/client.js"]');
-      if (s) {
-        s.setAttribute(
-          "theme",
-          document.documentElement.getAttribute("data-theme") === "dark" ? "github-dark" : "github-light"
-        );
-      }
-    })();
-  </script>
+  <button id="load-comments" class="comment-btn" type="button"
+    data-repo="{{ cfg.commentsRepo }}"
+    data-issue="{{ post.number }}">加载评论{% if post.comments %} ({{ post.comments }}){% endif %}</button>
+  <div id="comments"></div>
 </section>
 {% endif %}
 {% endblock %}

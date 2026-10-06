@@ -210,6 +210,7 @@ class Builder:
         self.env.globals["cfg"] = cfg
         self.env.globals["base"] = self.base
         self.env.globals["now_year"] = dt.datetime.now().year
+        self.env.globals["asset_ver"] = str(int(dt.datetime.now().timestamp()))
 
     def render(self, template: str, **ctx) -> str:
         return self.env.get_template(template).render(**ctx)

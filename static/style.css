@@ -653,6 +653,29 @@ a {
   color: var(--fg-muted);
 }
 
+.comment-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.comment-btn:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.comment-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
 /* --- 页脚 ---------------------------------------------------------------- */
 .site-footer {
   margin-top: 4.5rem;

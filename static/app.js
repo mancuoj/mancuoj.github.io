@@ -7,14 +7,15 @@
     return root.getAttribute("data-theme") || "light";
   }
 
+  function utterancesName(theme) {
+    return theme === "dark" ? "github-dark" : "github-light";
+  }
+
   function utterancesTheme(theme) {
     var frame = document.querySelector("iframe.utterances-frame");
     if (!frame || !frame.contentWindow) return;
     frame.contentWindow.postMessage(
-      {
-        type: "set-theme",
-        theme: theme === "dark" ? "github-dark" : "github-light",
-      },
+      { type: "set-theme", theme: utterancesName(theme) },
       "https://utteranc.es"
     );
   }
@@ -28,27 +29,37 @@
       try {
         localStorage.setItem("theme", next);
       } catch (e) {}
-      /* 若评论脚本尚未执行, 直接改它的 theme 属性, 让 client.js 按新主题初始化 */
-      var uttScript = document.querySelector('script[src*="utteranc.es/client.js"]');
-      if (uttScript) {
-        uttScript.setAttribute("theme", next === "dark" ? "github-dark" : "github-light");
-      }
       utterancesTheme(next);
     });
   }
 
-  /* 评论 iframe: onload 时子页面已挂好监听, 顺势补发主题,
-     兜住"评论还没加载出来就切了主题"的情况。 */
-  var syncTimer = setInterval(function () {
-    var frame = document.querySelector("iframe.utterances-frame");
-    if (!frame) return;
-    clearInterval(syncTimer);
-    var send = function () {
-      utterancesTheme(currentTheme());
-    };
-    frame.addEventListener("load", send);
-    send();
-  }, 200);
+  /* --- 评论: 点击后再加载 ----------------------------------------------- */
+  /* 加载时主题已经确定, 直接把正确的 theme 传给 utterances, 从根上避免先亮后暗 */
+  var btn = document.getElementById("load-comments");
+  if (btn) {
+    btn.addEventListener("click", function () {
+      var box = document.getElementById("comments");
+      if (!box) return;
+      btn.disabled = true;
+      btn.textContent = "加载中…";
+
+      var s = document.createElement("script");
+      s.src = "https://utteranc.es/client.js";
+      s.setAttribute("repo", btn.dataset.repo);
+      s.setAttribute("issue-number", btn.dataset.issue);
+      s.setAttribute("theme", utterancesName(currentTheme()));
+      s.setAttribute("crossorigin", "anonymous");
+      s.async = true;
+      s.onload = function () {
+        btn.remove();
+      };
+      s.onerror = function () {
+        btn.disabled = false;
+        btn.textContent = "加载失败，点击重试";
+      };
+      box.appendChild(s);
+    });
+  }
 
   /* --- 标签页: 标签过滤 + 搜索 ----------------------------------------- */
   var filterRoot = document.getElementById("tag-filter");
@@ -74,11 +85,11 @@
     };
 
     filterRoot.addEventListener("click", function (e) {
-      var btn = e.target.closest(".chip");
-      if (!btn) return;
-      activeTag = btn.dataset.tag;
+      var chip = e.target.closest(".chip");
+      if (!chip) return;
+      activeTag = chip.dataset.tag;
       filterRoot.querySelectorAll(".chip").forEach(function (c) {
-        c.classList.toggle("is-active", c === btn);
+        c.classList.toggle("is-active", c === chip);
       });
       apply();
     });

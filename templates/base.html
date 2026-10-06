@@ -13,7 +13,7 @@
 {% block ogmeta %}{% endblock %}
 <link rel="icon" href="{{ cfg.avatar }}">
 {% if cfg.showRss %}<link rel="alternate" type="application/rss+xml" title="{{ cfg.title }}" href="{{ base }}/rss.xml">
-{% endif %}<link rel="stylesheet" href="{{ base }}/static/style.css">
+{% endif %}<link rel="stylesheet" href="{{ base }}/static/style.css?v={{ asset_ver }}">
 <script>
 (function () {
   try {
@@ -48,6 +48,6 @@
   </div>
   {% if cfg.footer %}<p class="footer-note">{{ cfg.footer }}</p>{% endif %}
 </footer>
-<script src="{{ base }}/static/app.js" defer></script>
+<script src="{{ base }}/static/app.js?v={{ asset_ver }}" defer></script>
 </body>
 </html>
