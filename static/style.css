@@ -182,13 +182,13 @@ a {
 .post-row {
   display: flex;
   align-items: baseline;
-  gap: 16px;
-  padding: 9px 0;
+  gap: 14px;
+  padding: 7px 0;
 }
 
 .post-row .title {
-  font-size: 0.94rem;
-  line-height: 1.5;
+  font-size: 0.88rem;
+  line-height: 1.45;
   transition: color 0.16s ease;
 }
 
