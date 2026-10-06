@@ -33,15 +33,18 @@
     });
   }
 
-  /* --- 评论: 点击后再加载 ----------------------------------------------- */
-  /* 加载时主题已经确定, 直接把正确的 theme 传给 utterances, 从根上避免先亮后暗 */
+  /* --- 评论: 点击后加载, 带加载态与淡入 --------------------------------- */
+  var box = document.getElementById("comments");
   var btn = document.getElementById("load-comments");
-  if (btn) {
+  if (box && btn) {
     btn.addEventListener("click", function () {
-      var box = document.getElementById("comments");
-      if (!box) return;
-      btn.disabled = true;
-      btn.textContent = "加载中…";
+      btn.remove();
+
+      var loader = document.createElement("div");
+      loader.className = "comments-loading";
+      loader.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>加载评论…</span>';
+      box.classList.add("is-loading");
+      box.appendChild(loader);
 
       var s = document.createElement("script");
       s.src = "https://utteranc.es/client.js";
@@ -50,14 +53,27 @@
       s.setAttribute("theme", utterancesName(currentTheme()));
       s.setAttribute("crossorigin", "anonymous");
       s.async = true;
-      s.onload = function () {
-        btn.remove();
-      };
       s.onerror = function () {
-        btn.disabled = false;
-        btn.textContent = "加载失败，点击重试";
+        box.classList.remove("is-loading");
+        loader.remove();
+        var fail = document.createElement("p");
+        fail.className = "comments-fail";
+        fail.textContent = "评论加载失败，请刷新页面重试。";
+        box.appendChild(fail);
       };
       box.appendChild(s);
+
+      /* 等 utterances 的 iframe 出现，撤掉加载态（内容本身会淡入） */
+      var tries = 0;
+      var timer = setInterval(function () {
+        if (box.querySelector("iframe.utterances-frame")) {
+          clearInterval(timer);
+          box.classList.remove("is-loading");
+          loader.remove();
+        } else if (++tries > 130) {
+          clearInterval(timer);
+        }
+      }, 150);
     });
   }
 

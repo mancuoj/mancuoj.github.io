@@ -585,6 +585,55 @@ a {
   margin-top: 40px;
 }
 
+/* 加载态：转圈 + 预留高度，避免点击后页面突然撑开 */
+#comments.is-loading {
+  min-height: 220px;
+}
+
+.comments-loading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 20px 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--hair);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 评论内容淡入 */
+iframe.utterances-frame {
+  animation: comment-fade 0.35s ease both;
+}
+
+@keyframes comment-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.comments-fail {
+  padding: 12px 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 .comment-btn {
   padding: 0;
   border: 0;
@@ -698,5 +747,9 @@ a {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+
+  iframe.utterances-frame {
+    animation: none;
   }
 }
