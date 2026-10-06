@@ -437,8 +437,9 @@ class Builder:
         chars: set[str] = set()
         for path in self.out.rglob("*.html"):
             raw = path.read_text(encoding="utf-8", errors="ignore")
-            chars.update(html.unescape(re.sub(r"<[^>]+>", " ", raw)))
-        chars.update(" 0123456789.,:;·—()%+-/")
+            # 连同属性值 (placeholder / title / alt / content) 一并收集，避免漏字
+            chars.update(html.unescape(raw))
+        chars.update(" 0123456789.,:;·—…←→✳()[]%+-/@")
         return "".join(sorted(c for c in chars if c == " " or c.isprintable()))
 
     def build_fonts(self) -> None:

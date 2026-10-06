@@ -183,14 +183,7 @@ a {
   display: flex;
   align-items: baseline;
   gap: 16px;
-  padding: 9px 12px;
-  margin: 0 -12px;
-  border-radius: 6px;
-  transition: background-color 0.16s ease;
-}
-
-.post-row:hover {
-  background: var(--hover);
+  padding: 9px 0;
 }
 
 .post-row .title {
