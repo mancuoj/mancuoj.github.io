@@ -307,7 +307,7 @@ class Builder:
                         f"      <link>{p['url']}</link>",
                         f"      <guid isPermaLink=\"true\">{p['url']}</guid>",
                         f"      <pubDate>{p['created'].strftime('%a, %d %b %Y %H:%M:%S %z')}</pubDate>",
-                        f"      <description>{cdata(html.escape(p['excerpt']))}</description>",
+                        f"      <description>{cdata(p['excerpt'])}</description>",
                         "    </item>",
                     ]
                 )
