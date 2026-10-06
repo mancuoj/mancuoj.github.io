@@ -275,7 +275,7 @@ a {
 
 /* --- 正文排版 ------------------------------------------------------------ */
 .markdown-body {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.65;
   letter-spacing: 0.004em;
   color: var(--body);
