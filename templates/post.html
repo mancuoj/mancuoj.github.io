@@ -27,7 +27,7 @@
   <div class="markdown-body">{{ post.body|safe }}</div>
 
   <footer class="post-footer">
-    <a href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上查看原文 / 参与讨论 →</a>
+    <a href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上查看原文 →</a>
   </footer>
 </article>
 
@@ -40,6 +40,18 @@
     theme="github-light"
     crossorigin="anonymous"
     async>
+  </script>
+  <script>
+    /* 在 client.js 执行前按当前主题写好 theme，避免先亮后暗的闪白 */
+    (function () {
+      var s = document.querySelector('script[src*="utteranc.es/client.js"]');
+      if (s) {
+        s.setAttribute(
+          "theme",
+          document.documentElement.getAttribute("data-theme") === "dark" ? "github-dark" : "github-light"
+        );
+      }
+    })();
   </script>
 </section>
 {% endif %}

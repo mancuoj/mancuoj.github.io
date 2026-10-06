@@ -9,7 +9,7 @@
 
   function utterancesTheme(theme) {
     var frame = document.querySelector("iframe.utterances-frame");
-    if (!frame) return;
+    if (!frame || !frame.contentWindow) return;
     frame.contentWindow.postMessage(
       {
         type: "set-theme",
@@ -28,20 +28,27 @@
       try {
         localStorage.setItem("theme", next);
       } catch (e) {}
+      /* 若评论脚本尚未执行, 直接改它的 theme 属性, 让 client.js 按新主题初始化 */
+      var uttScript = document.querySelector('script[src*="utteranc.es/client.js"]');
+      if (uttScript) {
+        uttScript.setAttribute("theme", next === "dark" ? "github-dark" : "github-light");
+      }
       utterancesTheme(next);
     });
   }
 
-  /* 评论 iframe 加载后同步主题 */
-  var tries = 0;
-  var sync = setInterval(function () {
-    if (document.querySelector("iframe.utterances-frame")) {
+  /* 评论 iframe: onload 时子页面已挂好监听, 顺势补发主题,
+     兜住"评论还没加载出来就切了主题"的情况。 */
+  var syncTimer = setInterval(function () {
+    var frame = document.querySelector("iframe.utterances-frame");
+    if (!frame) return;
+    clearInterval(syncTimer);
+    var send = function () {
       utterancesTheme(currentTheme());
-      clearInterval(sync);
-    } else if (++tries > 40) {
-      clearInterval(sync);
-    }
-  }, 250);
+    };
+    frame.addEventListener("load", send);
+    send();
+  }, 200);
 
   /* --- 标签页: 标签过滤 + 搜索 ----------------------------------------- */
   var filterRoot = document.getElementById("tag-filter");
