@@ -774,13 +774,13 @@ iframe.utterances-frame.is-ready {
   animation: 0.3s ease both vt-in;
 }
 
-/* 主题切换 (同页, type=theme): 从点击处径向扩散 */
+/* 主题切换 (同页, type=theme): 从点击处径向扩散 (算法参考 VitePress) */
 @keyframes vt-reveal {
   from {
-    clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%));
+    clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 50%));
   }
   to {
-    clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%));
+    clip-path: circle(var(--vt-r, 150%) at var(--vt-x, 50%) var(--vt-y, 50%));
   }
 }
 
@@ -790,17 +790,23 @@ html:active-view-transition-type(theme) .site-header {
 
 html:active-view-transition-type(theme)::view-transition-old(root),
 html:active-view-transition-type(theme)::view-transition-new(root) {
+  animation: none;
   mix-blend-mode: normal;
 }
 
-html:active-view-transition-type(theme)::view-transition-old(root) {
-  z-index: 1;
+/* 暗 -> 亮: 新(亮)从圆心扩散出来 */
+html:active-view-transition-type(theme)::view-transition-new(root) {
+  animation: vt-reveal 0.4s ease-in both;
+}
+
+/* 亮 -> 暗: 新(暗)静置, 旧(亮)反向收缩收走 */
+html[data-theme="dark"]:active-view-transition-type(theme)::view-transition-new(root) {
   animation: none;
 }
 
-html:active-view-transition-type(theme)::view-transition-new(root) {
-  z-index: 2;
-  animation: vt-reveal 0.5s ease-out both;
+html[data-theme="dark"]:active-view-transition-type(theme)::view-transition-old(root) {
+  z-index: 1;
+  animation: vt-reveal 0.4s ease-in reverse forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

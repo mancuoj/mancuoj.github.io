@@ -30,10 +30,18 @@
     switcher.addEventListener("click", function (event) {
       var next = currentTheme() === "dark" ? "light" : "dark";
       var rect = switcher.getBoundingClientRect();
-      var x = event && event.clientX ? event.clientX : rect.left + rect.width / 2;
-      var y = event && event.clientY ? event.clientY : rect.top + rect.height / 2;
-      root.style.setProperty("--vt-x", x + "px");
-      root.style.setProperty("--vt-y", y + "px");
+      var cx = event && event.clientX ? event.clientX : rect.left + rect.width / 2;
+      var cy = event && event.clientY ? event.clientY : rect.top + rect.height / 2;
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var x = (100 * cx) / vw;
+      var y = (100 * cy) / vh;
+      var maxR =
+        (100 * Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy))) /
+        (Math.hypot(vw, vh) / Math.SQRT2);
+      root.style.setProperty("--vt-x", x + "%");
+      root.style.setProperty("--vt-y", y + "%");
+      root.style.setProperty("--vt-r", maxR + "%");
       var apply = function () {
         root.setAttribute("data-theme", next);
         try {
