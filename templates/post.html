@@ -17,17 +17,15 @@
     <div class="post-meta">
       <time datetime="{{ post.date }}">{{ post.date }}</time>
       <span class="dot">·</span>
-      <span>{{ post.reading }} 分钟</span>
-      {% if post.tags %}<span class="dot">·</span>
-      {% for tag in post.tags %}<a class="tag" href="{{ base }}/tags.html#{{ tag.slug }}">{{ tag.name }}</a>{% endfor %}
-      {% endif %}
+      <span>{{ post.reading }} min</span>
+      {% for tag in post.tags %}<span class="dot">·</span><a class="tag" href="{{ base }}/tags.html#{{ tag.slug }}">{{ tag.name }}</a>{% endfor %}
     </div>
   </header>
 
   <div class="markdown-body">{{ post.body|safe }}</div>
 
   <footer class="post-footer">
-    <a href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上查看原文 →</a>
+    <a class="source-link" href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上查看原文 →</a>
   </footer>
 </article>
 

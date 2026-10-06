@@ -1,26 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if page_num == 1 %}
-<p class="intro">{{ cfg.subtitle }}</p>
-{% endif %}
+<section class="section">
+  <span class="label">Writing</span>
+  <ol class="post-list">
+    {% for post in posts %}
+    <li>
+      <a class="post-row" href="{{ post.url }}">
+        <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
+        <time class="date" datetime="{{ post.date }}">{{ post.date }}</time>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
 
-<ol class="post-list">
-  {% for post in posts %}
-  <li class="post-item">
-    <a class="post-link" href="{{ post.url }}">
-      <time class="post-date" datetime="{{ post.date }}">{{ post.date }}</time>
-      <span class="post-title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
-    </a>
-  </li>
-  {% endfor %}
-</ol>
+<section class="section">
+  <span class="label">Elsewhere</span>
+  <p class="links">{% for item in cfg.social %}<a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+</section>
 
 {% if total_pages > 1 %}
 <nav class="pagination">
-  {% if prev_url %}<a class="page-link" href="{{ prev_url }}">← 新一点</a>{% else %}<span class="page-link is-disabled">← 新一点</span>{% endif %}
+  {% if prev_url %}<a href="{{ prev_url }}">← 新一点</a>{% else %}<span class="is-disabled">← 新一点</span>{% endif %}
   <span class="page-info">{{ page_num }} / {{ total_pages }}</span>
-  {% if next_url %}<a class="page-link" href="{{ next_url }}">旧一点 →</a>{% else %}<span class="page-link is-disabled">旧一点 →</span>{% endif %}
+  {% if next_url %}<a href="{{ next_url }}">旧一点 →</a>{% else %}<span class="is-disabled">旧一点 →</span>{% endif %}
 </nav>
 {% endif %}
 {% endblock %}

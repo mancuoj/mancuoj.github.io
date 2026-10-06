@@ -17,6 +17,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import unicodedata
 from pathlib import Path
@@ -36,6 +37,19 @@ from pygments.util import ClassNotFound
 ROOT = Path(__file__).resolve().parent
 API = "https://api.github.com"
 TIMEOUT = 30
+
+# --- 字体：构建时按用到的字裁剪后自托管 ------------------------------------- #
+FONTCACHE = ROOT / ".fontcache"
+# (font-family, weight) -> 下载地址（拉丁字体已是子集，仍会再裁一次）
+LATIN_FONTS = {
+    ("Open Runde", 400): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-400-normal.woff2",
+    ("Open Runde", 500): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-500-normal.woff2",
+    ("Open Runde", 600): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-600-normal.woff2",
+    ("Syne", 700): "https://cdn.jsdelivr.net/npm/@fontsource/syne/files/syne-latin-700-normal.woff2",
+}
+CJK_FAMILY = "LXGW WenKai Screen"
+CJK_TTF_URL = "https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.522/LXGWWenKaiScreen.ttf"
+CJK_CDN_CSS = "https://cn-font.claude-code-best.win/packages/lywkpmydb/dist/LXGWWenKaiScreen/result.css"
 
 
 # --------------------------------------------------------------------------- #
@@ -384,6 +398,84 @@ class Builder:
             shutil.copytree(src, dst)
         # Pygments 代码高亮样式由 style.css 内联定义, 这里不额外生成。
 
+    # -- 字体：下载 → 按用字裁剪 → 自托管 ----------------------------------- #
+    def _download(self, url: str, dest: Path) -> bool:
+        if dest.exists() and dest.stat().st_size > 0:
+            return True
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            resp = self.gh.session.get(url, timeout=180)
+            resp.raise_for_status()
+            dest.write_bytes(resp.content)
+            return True
+        except requests.RequestException as exc:
+            log(f"  ! 字体下载失败 {url}: {exc}")
+            return False
+
+    @staticmethod
+    def _subset(src: Path, dest: Path, text: str) -> bool:
+        try:
+            subprocess.run(
+                [
+                    sys.executable, "-m", "fontTools.subset", str(src),
+                    f"--text={text}",
+                    "--flavor=woff2",
+                    f"--output-file={dest}",
+                    "--layout-features=*",
+                    "--no-hinting",
+                    "--name-IDs=*",
+                ],
+                check=True, capture_output=True,
+            )
+            return dest.exists() and dest.stat().st_size > 0
+        except (subprocess.CalledProcessError, OSError) as exc:
+            detail = exc.stderr.decode("utf-8", "ignore")[:200] if hasattr(exc, "stderr") and exc.stderr else exc
+            log(f"  ! 字体裁剪失败 {src.name}: {detail}")
+            return False
+
+    def _collect_text(self) -> str:
+        chars: set[str] = set()
+        for path in self.out.rglob("*.html"):
+            raw = path.read_text(encoding="utf-8", errors="ignore")
+            chars.update(html.unescape(re.sub(r"<[^>]+>", " ", raw)))
+        chars.update(" 0123456789.,:;·—()%+-/")
+        return "".join(sorted(c for c in chars if c == " " or c.isprintable()))
+
+    def build_fonts(self) -> None:
+        text = self._collect_text()
+        fontdir = self.out / "static" / "fonts"
+        fontdir.mkdir(parents=True, exist_ok=True)
+        rules: list[str] = []
+        total = 0
+        for (family, weight), url in LATIN_FONTS.items():
+            src = FONTCACHE / url.rsplit("/", 1)[-1]
+            local = fontdir / src.name
+            if self._download(url, src) and self._subset(src, local, text):
+                rules.append(
+                    f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
+                    f'font-display:swap;src:url("fonts/{local.name}") format("woff2")}}'
+                )
+                total += local.stat().st_size
+            else:
+                rules.append(
+                    f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
+                    f'font-display:swap;src:url("{url}") format("woff2")}}'
+                )
+        ttf = FONTCACHE / "LXGWWenKaiScreen.ttf"
+        local = fontdir / "lxgwwenkai-screen.woff2"
+        if self._download(CJK_TTF_URL, ttf) and self._subset(ttf, local, text):
+            rules.append(
+                f'@font-face{{font-family:"{CJK_FAMILY}";font-style:normal;font-weight:400;'
+                f'font-display:swap;src:url("fonts/{local.name}") format("woff2")}}'
+            )
+            total += local.stat().st_size
+            cjk = f"{local.stat().st_size / 1024:.0f} KB (裁剪自 {len(text)} 字)"
+        else:
+            rules.insert(0, f'@import url("{CJK_CDN_CSS}");')
+            cjk = "CDN 回退"
+        (self.out / "static" / "fonts.css").write_text("\n".join(rules) + "\n", encoding="utf-8")
+        log(f"  字体: {cjk}, 自托管合计 {total / 1024:.0f} KB")
+
     # -- 入口 --------------------------------------------------------------- #
     def run(self) -> None:
         log(f"→ 拉取 issues: {self.gh.repo}")
@@ -402,6 +494,7 @@ class Builder:
         self.build_rss(posts)
         self.build_sitemap(posts)
         self.copy_static()
+        self.build_fonts()
         try:
             shown = self.out.relative_to(ROOT)
         except ValueError:

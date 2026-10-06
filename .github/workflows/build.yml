@@ -50,6 +50,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Cache fonts
+        uses: actions/cache@v4
+        with:
+          path: .fontcache
+          key: fonts-lxgwwenkai-screen-v1.522-openrunde-syne
+
       - name: Build
         run: python build.py
         env:

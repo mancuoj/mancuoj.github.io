@@ -99,10 +99,14 @@ GitHub Issues ──► build.py ──► docs/ ──► GitHub Pages
 
 ## 设计
 
-- 极简阅读向：系统字体栈、单栏约 704px、细线分隔、克制的留白
-- **换个人主色**：改 `static/style.css` 里的 `--accent` 与 `--accent-soft`
-- **改结构与排版**：直接编辑 `templates/*.html` 和 `static/style.css`，push 后自动生效
+- **大字标识 + 小字正文**：`Syne` 排的 `mancuoj.` 作页面标识，其余文字收小，靠大小对比出质感
+- **字体全部自托管、构建时裁剪**：
+  - `Open Runde`（拉丁 UI）、`Syne`（标识）、`霞鹜文楷屏幕阅读版`（中文正文）
+  - 构建时收集页面实际用到的字符，用 `fontTools` 裁剪成 woff2（中文通常 200KB 上下），产物在 `docs/static/fonts/`
+  - 字体源缓存于 `.fontcache/`（CI 用 Actions cache）
+- **亮 / 暗两套**，默认跟随系统，切换后记忆
+- **换个人主色**：改 `static/style.css` 里的 `--accent`
 
 ## 依赖
 
-生成器是纯 Python：`requests`、`Jinja2`、`markdown-it-py`（含 `mdit-py-plugins`）、`Pygments`。
+生成器是纯 Python：`requests`、`Jinja2`、`markdown-it-py`（含 `mdit-py-plugins`）、`Pygments`，以及字体裁剪用的 `fonttools`、`brotli`。

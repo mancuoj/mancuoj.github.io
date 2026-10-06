@@ -4,3 +4,5 @@ markdown-it-py==3.0.0
 mdit-py-plugins==0.4.2
 linkify-it-py==2.0.3
 Pygments==2.18.0
+fonttools[woff]==4.66.1
+brotli==1.1.0

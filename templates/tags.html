@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}标签 · {{ cfg.title }}{% endblock %}
+{% block title %}Index · {{ cfg.title }}{% endblock %}
 {% block description %}全部文章与标签{% endblock %}
 
 {% block content %}
-<h1 class="page-title">标签</h1>
+<h1 class="page-title">Index</h1>
 
 <div class="tag-filter" id="tag-filter">
   <button class="chip is-active" type="button" data-tag="*">全部<span class="chip-count">{{ posts|length }}</span></button>
@@ -20,9 +20,9 @@
 <ol class="post-list" id="tagged-posts">
   {% for post in posts %}
   <li class="post-item" data-tags="{{ post.tags|map(attribute='slug')|join(' ') }}" data-text="{{ (post.title ~ ' ' ~ post.excerpt)|lower }}">
-    <a class="post-link" href="{{ post.url }}">
-      <time class="post-date" datetime="{{ post.date }}">{{ post.date }}</time>
-      <span class="post-title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
+    <a class="post-row" href="{{ post.url }}">
+      <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
+      <time class="date" datetime="{{ post.date }}">{{ post.date }}</time>
     </a>
   </li>
   {% endfor %}
