@@ -196,25 +196,12 @@ a {
   color: var(--accent);
 }
 
-/* 年份水印：描边透明，放在该年最后一篇之后 */
-.year-mark {
-  margin-top: 8px;
-  text-align: right;
-  font-family: var(--sans);
-  font-weight: 700;
-  font-size: clamp(2.4rem, 10vw, 4rem);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--hair);
-  user-select: none;
-  pointer-events: none;
-}
-
-@supports not (-webkit-text-stroke: 1px currentColor) {
-  .year-mark {
-    color: var(--hair);
-  }
+.post-year {
+  flex: 0 0 2.6rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  color: var(--faint);
 }
 
 .pin {

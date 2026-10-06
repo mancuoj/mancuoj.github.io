@@ -8,12 +8,12 @@
     {% for post in group.posts %}
     <li>
       <a class="post-row" href="{{ post.url }}">
+        <span class="post-year">{% if loop.first %}{{ group.year }}{% endif %}</span>
         <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
       </a>
     </li>
     {% endfor %}
   </ol>
-  <div class="year-mark" aria-hidden="true">{{ group.year }}</div>
   {% endfor %}
 </section>
 
