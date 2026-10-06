@@ -20,10 +20,10 @@
     );
   }
 
-  /* --- 主题切换 --------------------------------------------------------- */
-  var toggle = document.getElementById("theme-toggle");
-  if (toggle) {
-    toggle.addEventListener("click", function () {
+  /* --- 主题切换（只在主页 Elsewhere 的文字按钮） ------------------------ */
+  var switcher = document.getElementById("theme-switch");
+  if (switcher) {
+    switcher.addEventListener("click", function () {
       var next = currentTheme() === "dark" ? "light" : "dark";
       root.setAttribute("data-theme", next);
       try {
