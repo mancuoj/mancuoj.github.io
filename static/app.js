@@ -27,35 +27,13 @@
       switcher.textContent = currentTheme() === "dark" ? "Light" : "Dark";
     };
     syncLabel();
-    switcher.addEventListener("click", function (event) {
+    switcher.addEventListener("click", function () {
       var next = currentTheme() === "dark" ? "light" : "dark";
-      var rect = switcher.getBoundingClientRect();
-      var cx = event && event.clientX ? event.clientX : rect.left + rect.width / 2;
-      var cy = event && event.clientY ? event.clientY : rect.top + rect.height / 2;
-      var vw = window.innerWidth;
-      var vh = window.innerHeight;
-      var x = (100 * cx) / vw;
-      var y = (100 * cy) / vh;
-      var maxR =
-        (100 * Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy))) /
-        (Math.hypot(vw, vh) / Math.SQRT2);
-      root.style.setProperty("--vt-x", x + "%");
-      root.style.setProperty("--vt-y", y + "%");
-      root.style.setProperty("--vt-r", maxR + "%");
-      var apply = function () {
-        root.setAttribute("data-theme", next);
-        try {
-          localStorage.setItem("theme", next);
-        } catch (e) {}
-        syncLabel();
-      };
-      var reduceMotion =
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (!reduceMotion && document.startViewTransition) {
-        document.startViewTransition({ update: apply, types: ["theme"] });
-      } else {
-        apply();
-      }
+      root.setAttribute("data-theme", next);
+      try {
+        localStorage.setItem("theme", next);
+      } catch (e) {}
+      syncLabel();
       utterancesTheme(next);
     });
   }
@@ -110,27 +88,18 @@
     });
   }
 
-  /* --- 标签页: 标签过滤 + 搜索 ----------------------------------------- */
+  /* --- 标签页: 标签过滤 ----------------------------------------------- */
   var filterRoot = document.getElementById("tag-filter");
   var list = document.getElementById("tagged-posts");
   if (filterRoot && list) {
     var items = Array.prototype.slice.call(list.querySelectorAll(".post-item"));
-    var search = document.getElementById("search");
-    var empty = document.getElementById("empty");
     var activeTag = "*";
 
     var apply = function () {
-      var q = search ? search.value.trim().toLowerCase() : "";
-      var shown = 0;
       items.forEach(function (li) {
         var tags = " " + (li.dataset.tags || "") + " ";
-        var okTag = activeTag === "*" || tags.indexOf(" " + activeTag + " ") !== -1;
-        var okText = !q || (li.dataset.text || "").indexOf(q) !== -1;
-        var show = okTag && okText;
-        li.hidden = !show;
-        if (show) shown++;
+        li.hidden = !(activeTag === "*" || tags.indexOf(" " + activeTag + " ") !== -1);
       });
-      if (empty) empty.hidden = shown !== 0;
     };
 
     filterRoot.addEventListener("click", function (e) {
@@ -142,8 +111,6 @@
       });
       apply();
     });
-
-    if (search) search.addEventListener("input", apply);
 
     if (location.hash) {
       var slug = decodeURIComponent(location.hash.slice(1));

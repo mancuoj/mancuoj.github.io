@@ -20,6 +20,7 @@
   --accent: #e0361c;
   --code-bg: #efeeeb;
   --select: #e6e2d9;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
   --measure: 652px;
 }
@@ -139,6 +140,11 @@ a {
   align-items: baseline;
   gap: 14px;
   padding: 7px 0;
+  transition: opacity 120ms var(--ease-out);
+}
+
+.post-row:active {
+  opacity: 0.6;
 }
 
 .post-row .title {
@@ -196,7 +202,11 @@ a {
   text-decoration-thickness: 1px;
   text-decoration-color: var(--faint);
   text-underline-offset: 3px;
-  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease, opacity 120ms var(--ease-out);
+}
+
+.links button:active {
+  opacity: 0.6;
 }
 
 .links button:hover {
@@ -614,7 +624,7 @@ a {
 /* 评论内容就绪后淡入 */
 iframe.utterances-frame {
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.25s ease;
 }
 
 iframe.utterances-frame.is-ready {
@@ -625,6 +635,13 @@ iframe.utterances-frame.is-ready {
   padding: 12px 0;
   color: var(--muted);
   font-size: 0.8rem;
+  transition: opacity 200ms var(--ease-out);
+}
+
+@starting-style {
+  .comments-fail {
+    opacity: 0;
+  }
 }
 
 .comment-btn {
@@ -639,12 +656,16 @@ iframe.utterances-frame.is-ready {
   text-decoration-thickness: 1px;
   text-decoration-color: var(--faint);
   text-underline-offset: 3px;
-  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease, opacity 120ms var(--ease-out);
 }
 
 .comment-btn:hover:not(:disabled) {
   color: var(--accent);
   text-decoration-color: var(--accent);
+}
+
+.comment-btn:active:not(:disabled) {
+  opacity: 0.6;
 }
 
 .comment-btn:disabled {
@@ -664,132 +685,45 @@ iframe.utterances-frame.is-ready {
 .tag-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 18px;
+  margin-bottom: 22px;
+  font-size: 0.84rem;
 }
 
 .chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  padding: 4px 11px;
-  border: 1px solid var(--hair);
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 0.74rem;
+  font-size: inherit;
   cursor: pointer;
-  transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+  transition: color 0.16s ease;
 }
 
 .chip:hover {
   color: var(--fg);
-  border-color: var(--faint);
 }
 
 .chip.is-active {
   color: var(--accent);
-  border-color: var(--accent);
 }
 
-.chip-count {
-  font-family: var(--mono);
-  font-size: 0.9em;
-  opacity: 0.65;
-}
-
-.search-row {
-  margin-bottom: 22px;
-}
-
-.search {
-  width: 100%;
-  padding: 7px 2px;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
   border: 0;
-  border-bottom: 1px solid var(--hair);
-  border-radius: 0;
-  background: none;
-  color: var(--fg);
-  font: inherit;
-  font-size: 0.86rem;
-  outline: none;
-  transition: border-color 0.16s ease;
 }
 
-.search::placeholder {
-  color: var(--faint);
-}
-
-.search:focus {
-  border-color: var(--accent);
-}
-
-.empty {
-  color: var(--faint);
-  font-size: 0.86rem;
-}
-
-/* --- 响应式 -------------------------------------------------------------- */
+/* --- 减少动效: 只放缓持续旋转, 保留 color/opacity 反馈 -------------------- */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
-
-  iframe.utterances-frame {
-    transition: none;
-  }
-}
-
-/* --- 视图过渡 (View Transitions, Chromium/Safari) ----------------------- */
-@view-transition {
-  navigation: auto;
-}
-
-/* 页头作为共享元素保持不动 */
-.site-header {
-  view-transition-name: header;
-}
-
-/* 主题切换 (同页, type=theme): 从点击处径向扩散 (算法参考 VitePress) */
-@keyframes vt-reveal {
-  from {
-    clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 50%));
-  }
-  to {
-    clip-path: circle(var(--vt-r, 150%) at var(--vt-x, 50%) var(--vt-y, 50%));
-  }
-}
-
-html:active-view-transition-type(theme) .site-header {
-  view-transition-name: none;
-}
-
-html:active-view-transition-type(theme)::view-transition-old(root),
-html:active-view-transition-type(theme)::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-/* 暗 -> 亮: 新(亮)从圆心扩散出来 */
-html:active-view-transition-type(theme)::view-transition-new(root) {
-  animation: vt-reveal 0.4s ease-in both;
-}
-
-/* 亮 -> 暗: 新(暗)静置, 旧(亮)反向收缩收走 */
-html[data-theme="dark"]:active-view-transition-type(theme)::view-transition-new(root) {
-  animation: none;
-}
-
-html[data-theme="dark"]:active-view-transition-type(theme)::view-transition-old(root) {
-  z-index: 1;
-  animation: vt-reveal 0.4s ease-in reverse forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
+  .spinner {
+    animation-duration: 2s;
   }
 }

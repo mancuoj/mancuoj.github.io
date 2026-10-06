@@ -23,12 +23,6 @@
     document.documentElement.setAttribute("data-theme", t);
   } catch (e) {}
 })();
-/* 尊重"减少动效": 跨页面过渡直接跳过, 走普通跳转 */
-window.addEventListener("pagereveal", function (e) {
-  if (e.viewTransition && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    e.viewTransition.skipTransition();
-  }
-});
 </script>
 {% block head %}{% endblock %}
 </head>
