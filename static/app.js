@@ -27,8 +27,13 @@
       switcher.textContent = currentTheme() === "dark" ? "Light" : "Dark";
     };
     syncLabel();
-    switcher.addEventListener("click", function () {
+    switcher.addEventListener("click", function (event) {
       var next = currentTheme() === "dark" ? "light" : "dark";
+      var rect = switcher.getBoundingClientRect();
+      var x = event && event.clientX ? event.clientX : rect.left + rect.width / 2;
+      var y = event && event.clientY ? event.clientY : rect.top + rect.height / 2;
+      root.style.setProperty("--vt-x", x + "px");
+      root.style.setProperty("--vt-y", y + "px");
       var apply = function () {
         root.setAttribute("data-theme", next);
         try {

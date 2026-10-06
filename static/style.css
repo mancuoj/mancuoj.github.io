@@ -744,7 +744,6 @@ iframe.utterances-frame.is-ready {
 /* --- 视图过渡 (View Transitions, Chromium/Safari) ----------------------- */
 @view-transition {
   navigation: auto;
-  types: nav;
 }
 
 /* 页头作为共享元素保持不动, 避免文字缩放的形变 */
@@ -752,30 +751,57 @@ iframe.utterances-frame.is-ready {
   view-transition-name: header;
 }
 
+/* 默认(root) = 跨页面导航: 内容轻微上移 */
 @keyframes vt-out {
   to {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-14px);
   }
 }
 
 @keyframes vt-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px);
   }
 }
 
-/* 跨页面导航: 内容轻微上移 (type=nav) */
-html:active-view-transition-type(nav)::view-transition-old(root) {
-  animation: 0.26s ease both vt-out;
+::view-transition-old(root) {
+  animation: 0.3s ease both vt-out;
 }
 
-html:active-view-transition-type(nav)::view-transition-new(root) {
-  animation: 0.26s ease both vt-in;
+::view-transition-new(root) {
+  animation: 0.3s ease both vt-in;
 }
 
-/* 主题切换 (type=theme) 用浏览器默认的简单 cross-fade, 不额外写动画 */
+/* 主题切换 (同页, type=theme): 从点击处径向扩散 */
+@keyframes vt-reveal {
+  from {
+    clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+}
+
+html:active-view-transition-type(theme) .site-header {
+  view-transition-name: none;
+}
+
+html:active-view-transition-type(theme)::view-transition-old(root),
+html:active-view-transition-type(theme)::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+html:active-view-transition-type(theme)::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+
+html:active-view-transition-type(theme)::view-transition-new(root) {
+  z-index: 2;
+  animation: vt-reveal 0.5s ease-out both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
