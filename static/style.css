@@ -196,22 +196,25 @@ a {
   color: var(--accent);
 }
 
-.year {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0 8px;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
-  color: var(--faint);
+/* 年份水印：描边透明，放在该年最后一篇之后 */
+.year-mark {
+  margin-top: 8px;
+  text-align: right;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 10vw, 4rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hair);
+  user-select: none;
+  pointer-events: none;
 }
 
-.year::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--hair);
+@supports not (-webkit-text-stroke: 1px currentColor) {
+  .year-mark {
+    color: var(--hair);
+  }
 }
 
 .pin {
