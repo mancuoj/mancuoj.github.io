@@ -76,7 +76,7 @@ a {
 .site-header {
   max-width: var(--measure);
   margin: 0 auto;
-  padding: clamp(30px, 5.5vw, 52px) 24px 0;
+  padding: clamp(40px, 7vw, 96px) 24px 0;
   margin-bottom: clamp(30px, 5vw, 48px);
 }
 
