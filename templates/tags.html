@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}标签 · {{ cfg.title }}{% endblock %}
+{% block description %}全部文章与标签{% endblock %}
+
+{% block content %}
+<h1 class="page-title">标签</h1>
+
+<div class="tag-filter" id="tag-filter">
+  <button class="chip is-active" type="button" data-tag="*">全部<span class="chip-count">{{ posts|length }}</span></button>
+  {% for t in tags %}
+  <button class="chip" type="button" data-tag="{{ t.slug }}">{{ t.name }}<span class="chip-count">{{ t.count }}</span></button>
+  {% endfor %}
+</div>
+
+<div class="search-row">
+  <input id="search" class="search" type="search" placeholder="搜索标题或摘要…" autocomplete="off" spellcheck="false">
+</div>
+
+<ol class="post-list" id="tagged-posts">
+  {% for post in posts %}
+  <li class="post-item" data-tags="{{ post.tags|map(attribute='slug')|join(' ') }}" data-text="{{ (post.title ~ ' ' ~ post.excerpt)|lower }}">
+    <a class="post-link" href="{{ post.url }}">
+      <time class="post-date" datetime="{{ post.date }}">{{ post.date }}</time>
+      <span class="post-title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ol>
+<p class="empty" id="empty" hidden>没有匹配的文章。</p>
+{% endblock %}
