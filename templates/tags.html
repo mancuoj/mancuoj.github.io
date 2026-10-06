@@ -21,7 +21,7 @@
   {% for post in posts %}
   <li class="post-item" data-tags="{{ post.tags|map(attribute='slug')|join(' ') }}" data-text="{{ (post.title ~ ' ' ~ post.excerpt)|lower }}">
     <a class="post-row" href="{{ post.url }}">
-      <span class="title" style="view-transition-name: post-{{ post.number }}">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
+      <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
     </a>
   </li>
   {% endfor %}

@@ -751,12 +751,6 @@ iframe.utterances-frame.is-ready {
   view-transition-name: header;
 }
 
-/* 命名元素(标题形变)用稍缓的时长 */
-::view-transition-group(*) {
-  animation-duration: 0.35s;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* 主题切换 (同页, type=theme): 从点击处径向扩散 (算法参考 VitePress) */
 @keyframes vt-reveal {
   from {
