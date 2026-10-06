@@ -251,6 +251,7 @@ class Builder:
                     "excerpt": plain_excerpt(body),
                     "created": created,
                     "date": created.strftime("%Y-%m-%d"),
+                    "year": created.strftime("%Y"),
                     "time": created.strftime("%Y-%m-%d %H:%M"),
                     "url": f"{self.base}/post/{issue['number']}.html",
                     "path": f"post/{issue['number']}.html",
@@ -305,9 +306,15 @@ class Builder:
                 )
             if page_num < total:
                 next_url = f"{self.base}/page{page_num + 1}.html"
+            groups: list[dict] = []
+            for p in items:
+                if not groups or groups[-1]["year"] != p["year"]:
+                    groups.append({"year": p["year"], "posts": []})
+                groups[-1]["posts"].append(p)
             html_out = self.render(
                 "index.html",
                 posts=items,
+                groups=groups,
                 tags=tags,
                 page_num=page_num,
                 total_pages=total,

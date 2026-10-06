@@ -22,7 +22,6 @@
   <li class="post-item" data-tags="{{ post.tags|map(attribute='slug')|join(' ') }}" data-text="{{ (post.title ~ ' ' ~ post.excerpt)|lower }}">
     <a class="post-row" href="{{ post.url }}">
       <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
-      <time class="date" datetime="{{ post.date }}">{{ post.date }}</time>
     </a>
   </li>
   {% endfor %}

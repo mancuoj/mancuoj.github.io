@@ -196,12 +196,22 @@ a {
   color: var(--accent);
 }
 
-.post-row .date {
-  margin-left: auto;
+.year {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 8px;
   font-family: var(--mono);
   font-size: 0.66rem;
+  letter-spacing: 0.14em;
   color: var(--faint);
-  white-space: nowrap;
+}
+
+.year::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--hair);
 }
 
 .pin {
@@ -714,10 +724,6 @@ a {
 
   .site-nav {
     padding-bottom: 0;
-  }
-
-  .post-row .date {
-    display: none;
   }
 }
 

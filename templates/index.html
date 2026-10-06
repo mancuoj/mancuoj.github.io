@@ -3,16 +3,18 @@
 {% block content %}
 <section class="section">
   <span class="label">Writing</span>
+  {% for group in groups %}
+  <div class="year">{{ group.year }}</div>
   <ol class="post-list">
-    {% for post in posts %}
+    {% for post in group.posts %}
     <li>
       <a class="post-row" href="{{ post.url }}">
         <span class="title">{{ post.title }}{% if post.pinned %}<span class="pin" title="置顶">✳</span>{% endif %}</span>
-        <time class="date" datetime="{{ post.date }}">{{ post.date }}</time>
       </a>
     </li>
     {% endfor %}
   </ol>
+  {% endfor %}
 </section>
 
 <section class="section">
