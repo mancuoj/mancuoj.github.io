@@ -87,6 +87,7 @@ a {
   line-height: 1.3;
   letter-spacing: -0.025em;
   white-space: nowrap;
+  view-transition-name: brand;
 }
 
 .brand i {
@@ -738,5 +739,23 @@ iframe.utterances-frame.is-ready {
 
   iframe.utterances-frame {
     transition: none;
+  }
+}
+
+/* --- 跨页面视图过渡 (View Transitions, Chromium 系) ---------------------- */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
