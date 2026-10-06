@@ -19,7 +19,7 @@
 
 <section class="section">
   <span class="label">Elsewhere</span>
-  <p class="links"><a href="{{ base }}/tags.html">Tags</a>{% for item in cfg.social %} · <a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>{% endfor %}{% if cfg.showRss %} · <a href="{{ base }}/rss.xml" target="_blank" rel="noopener">RSS</a>{% endif %} · <button id="theme-switch" type="button">Light/Dark</button></p>
+  <p class="links"><a href="{{ base }}/tags.html">Tags</a>{% for item in cfg.social %} · <a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>{% endfor %}{% if cfg.showRss %} · <a href="{{ base }}/rss.xml" target="_blank" rel="noopener">RSS</a>{% endif %} · <button id="theme-switch" type="button">Dark</button></p>
 </section>
 
 {% if total_pages > 1 %}

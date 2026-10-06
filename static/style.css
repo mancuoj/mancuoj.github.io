@@ -19,6 +19,7 @@
   --hover: #ececea;
   --accent: #e0361c;
   --code-bg: #efeeeb;
+  --select: #e6e2d9;
 
   --measure: 652px;
 }
@@ -33,6 +34,7 @@
   --hover: #191918;
   --accent: #ff3b2f;
   --code-bg: #191918;
+  --select: #2f2d29;
 }
 
 *,
@@ -66,8 +68,8 @@ a {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--select);
+  color: var(--fg);
 }
 
 /* --- 页头：大字标识 + 小字导航 ------------------------------------------- */
