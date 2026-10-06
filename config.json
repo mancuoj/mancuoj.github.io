@@ -8,19 +8,14 @@
   "homeUrl": "https://mancuoj.github.io",
   "lang": "zh-CN",
   "timezone": 8,
-  "postsPerPage": 10,
   "showComments": true,
   "commentsRepo": "mancuoj/mancuoj.github.io",
   "showRss": true,
   "sitemap": true,
   "excludeLabels": [],
   "pinLabel": "pin",
-  "nav": [
-    { "label": "GitHub", "url": "https://github.com/mancuoj" }
-  ],
   "social": [
     { "label": "GitHub", "url": "https://github.com/mancuoj" },
     { "label": "Email", "url": "mailto:mancuoj@gmail.com" }
-  ],
-  "footer": ""
+  ]
 }

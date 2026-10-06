@@ -214,31 +214,6 @@ a {
   text-decoration-color: var(--accent);
 }
 
-/* --- 分页 ---------------------------------------------------------------- */
-.pagination {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: 34px;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.pagination a:hover {
-  color: var(--accent);
-}
-
-.pagination .is-disabled {
-  color: var(--faint);
-  opacity: 0.6;
-}
-
-.pagination .page-info {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--faint);
-}
-
 /* --- 文章页 -------------------------------------------------------------- */
 .post {
   max-width: var(--measure);
@@ -285,7 +260,7 @@ a {
 
 /* --- 正文排版 ------------------------------------------------------------ */
 .markdown-body {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.65;
   letter-spacing: 0.004em;
   color: var(--body);
@@ -586,6 +561,28 @@ a {
   margin-top: 40px;
 }
 
+.comments-actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.issue-link {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+}
+
+.issue-link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 /* 加载态：转圈 + 预留高度，避免点击后页面突然撑开 */
 #comments {
   position: relative;
@@ -674,14 +671,17 @@ iframe.utterances-frame.is-ready {
   text-decoration: none;
 }
 
-/* --- 标签页 -------------------------------------------------------------- */
-.page-title {
-  margin-bottom: 18px;
-  font-size: 1.02rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+/* --- 404 ---------------------------------------------------------------- */
+.notfound {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(3rem, 14vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--fg);
 }
 
+/* --- 标签页 -------------------------------------------------------------- */
 .tag-filter {
   display: flex;
   flex-wrap: wrap;

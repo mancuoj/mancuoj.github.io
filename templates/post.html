@@ -25,9 +25,12 @@
 
 {% if cfg.showComments %}
 <section class="comments">
-  <button id="load-comments" class="comment-btn" type="button"
-    data-repo="{{ cfg.commentsRepo }}"
-    data-issue="{{ post.number }}">加载评论{% if post.comments %} ({{ post.comments }}){% endif %}</button>
+  <div class="comments-actions">
+    <button id="load-comments" class="comment-btn" type="button"
+      data-repo="{{ cfg.commentsRepo }}"
+      data-issue="{{ post.number }}">加载评论{% if post.comments %} ({{ post.comments }}){% endif %}</button>
+    <a class="issue-link" href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上讨论 ↗</a>
+  </div>
   <div id="comments"></div>
 </section>
 {% endif %}

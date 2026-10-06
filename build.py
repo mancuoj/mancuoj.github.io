@@ -21,7 +21,6 @@ import subprocess
 import sys
 import unicodedata
 from pathlib import Path
-from urllib.parse import quote
 
 import requests
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -84,16 +83,6 @@ def plain_excerpt(md_text: str, limit: int = 160) -> str:
     if len(text) > limit:
         text = text[:limit].rstrip() + "…"
     return text
-
-
-def reading_minutes(md_text: str) -> int:
-    """粗略估算阅读时长 (中文 400 字/分, 英文 200 词/分)。"""
-    if not md_text:
-        return 1
-    cjk = len(re.findall(r"[\u4e00-\u9fff]", md_text))
-    words = len(re.findall(r"[A-Za-z0-9]+", md_text))
-    minutes = cjk / 400 + words / 200
-    return max(1, round(minutes))
 
 
 # --------------------------------------------------------------------------- #
@@ -223,7 +212,6 @@ class Builder:
         )
         self.env.globals["cfg"] = cfg
         self.env.globals["base"] = self.base
-        self.env.globals["now_year"] = dt.datetime.now().year
         self.env.globals["asset_ver"] = str(int(dt.datetime.now().timestamp()))
 
     def render(self, template: str, **ctx) -> str:
@@ -246,18 +234,14 @@ class Builder:
                 {
                     "number": issue["number"],
                     "title": issue["title"],
-                    "body_md": body,
                     "body": self.md.render(body),
                     "excerpt": plain_excerpt(body),
                     "created": created,
                     "date": created.strftime("%Y-%m-%d"),
                     "year": created.strftime("%Y"),
-                    "time": created.strftime("%Y-%m-%d %H:%M"),
                     "url": f"{self.base}/post/{issue['number']}.html",
-                    "path": f"post/{issue['number']}.html",
                     "source": issue["html_url"],
                     "comments": issue.get("comments", 0),
-                    "reading": reading_minutes(body),
                     "pinned": pinned,
                     "tags": [
                         {"name": n, "slug": slugify(n)}
@@ -291,38 +275,22 @@ class Builder:
             )
             (post_dir / f"{post['number']}.html").write_text(html_out, encoding="utf-8")
 
-    def build_index(self, posts: list[dict], tags: list[dict]) -> None:
-        per = max(1, int(self.cfg.get("postsPerPage", 10)))
-        pages = [posts[i : i + per] for i in range(0, len(posts), per)] or [[]]
-        total = len(pages)
-        for idx, items in enumerate(pages):
-            page_num = idx + 1
-            filename = "index.html" if page_num == 1 else f"page{page_num}.html"
-            prev_url = None
-            next_url = None
-            if page_num > 1:
-                prev_url = f"{self.base}/" + (
-                    "index.html" if page_num == 2 else f"page{page_num - 1}.html"
-                )
-            if page_num < total:
-                next_url = f"{self.base}/page{page_num + 1}.html"
-            groups: list[dict] = []
-            for p in items:
-                if not groups or groups[-1]["year"] != p["year"]:
-                    groups.append({"year": p["year"], "posts": []})
-                groups[-1]["posts"].append(p)
-            html_out = self.render(
-                "index.html",
-                posts=items,
-                groups=groups,
-                tags=tags,
-                page_num=page_num,
-                total_pages=total,
-                prev_url=prev_url,
-                next_url=next_url,
-                page={"title": self.cfg["title"], "description": self.cfg["description"]},
-            )
-            (self.out / filename).write_text(html_out, encoding="utf-8")
+    @staticmethod
+    def group_by_year(posts: list[dict]) -> list[dict]:
+        groups: list[dict] = []
+        for p in posts:
+            if not groups or groups[-1]["year"] != p["year"]:
+                groups.append({"year": p["year"], "posts": []})
+            groups[-1]["posts"].append(p)
+        return groups
+
+    def build_index(self, posts: list[dict]) -> None:
+        html_out = self.render(
+            "index.html",
+            groups=self.group_by_year(posts),
+            page={"title": self.cfg["title"], "description": self.cfg["description"]},
+        )
+        (self.out / "index.html").write_text(html_out, encoding="utf-8")
 
     def build_tags(self, posts: list[dict], tags: list[dict]) -> None:
         html_out = self.render(
@@ -333,12 +301,8 @@ class Builder:
         )
         (self.out / "tags.html").write_text(html_out, encoding="utf-8")
 
-    def build_404(self, posts: list[dict]) -> None:
-        html_out = self.render(
-            "404.html",
-            posts=posts[:5],
-            page={"title": "404", "description": ""},
-        )
+    def build_404(self) -> None:
+        html_out = self.render("404.html", page={"title": "404", "description": ""})
         (self.out / "404.html").write_text(html_out, encoding="utf-8")
 
     def build_rss(self, posts: list[dict]) -> None:
@@ -496,9 +460,9 @@ class Builder:
         self.out.mkdir(parents=True)
 
         self.build_posts(posts)
-        self.build_index(posts, tags)
+        self.build_index(posts)
         self.build_tags(posts, tags)
-        self.build_404(posts)
+        self.build_404()
         self.build_rss(posts)
         self.build_sitemap(posts)
         self.copy_static()

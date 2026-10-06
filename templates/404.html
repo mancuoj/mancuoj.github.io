@@ -4,16 +4,5 @@
 {% block description %}页面不存在{% endblock %}
 
 {% block content %}
-<h1 class="page-title">404</h1>
-<p class="links">这里什么都没有。随便看看最近几篇 →</p>
-<ol class="post-list" style="margin-top: 14px">
-  {% for post in posts %}
-  <li>
-    <a class="post-row" href="{{ post.url }}">
-      <span class="title">{{ post.title }}</span>
-      <time class="date" datetime="{{ post.date }}">{{ post.date }}</time>
-    </a>
-  </li>
-  {% endfor %}
-</ol>
+<div class="notfound">404</div>
 {% endblock %}
