@@ -199,7 +199,7 @@ a {
 .post-year {
   flex: 0 0 2.6rem;
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.88rem;
   letter-spacing: 0.02em;
   color: var(--faint);
 }
@@ -214,7 +214,7 @@ a {
 /* --- 别处 / 链接 --------------------------------------------------------- */
 .links {
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
 }
 
 .links a {
