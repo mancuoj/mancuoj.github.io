@@ -9,6 +9,7 @@
 <div class="tag-filter" id="tag-filter">
   <button class="chip is-active" type="button" data-tag="*">All</button>
   {% for t in tags %}
+  <span class="sep" aria-hidden="true">·</span>
   <button class="chip" type="button" data-tag="{{ t.slug }}">{{ t.name }}</button>
   {% endfor %}
 </div>

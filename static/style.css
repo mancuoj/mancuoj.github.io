@@ -594,9 +594,14 @@ a {
 .tag-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
-  margin-bottom: 22px;
-  font-size: 0.84rem;
+  align-items: baseline;
+  gap: 0.5em;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+}
+
+.tag-filter .sep {
+  color: var(--faint);
 }
 
 .chip {
@@ -607,15 +612,25 @@ a {
   font: inherit;
   font-size: inherit;
   cursor: pointer;
-  transition: color 0.16s ease;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease, opacity 120ms var(--ease-out);
 }
 
 .chip:hover {
-  color: var(--fg);
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.chip:active {
+  opacity: 0.6;
 }
 
 .chip.is-active {
   color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 .sr-only {
