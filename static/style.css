@@ -78,11 +78,12 @@ a {
   margin-bottom: clamp(40px, 7vw, 72px);
 }
 
-.header-top {
+.header-sub {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
+  margin-top: 10px;
 }
 
 .brand {
@@ -100,27 +101,9 @@ a {
 }
 
 .tagline {
-  margin-top: 10px;
   color: var(--muted);
   font-size: 0.72rem;
   letter-spacing: 0.01em;
-}
-
-.site-nav {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-bottom: 0.35em;
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-.site-nav a {
-  transition: color 0.16s ease;
-}
-
-.site-nav a:hover {
-  color: var(--accent);
 }
 
 .theme-toggle {
@@ -199,7 +182,7 @@ a {
 .post-year {
   flex: 0 0 2.6rem;
   font-family: var(--mono);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   letter-spacing: 0.02em;
   color: var(--faint);
 }
@@ -214,7 +197,7 @@ a {
 /* --- 别处 / 链接 --------------------------------------------------------- */
 .links {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
 }
 
 .links a {
@@ -707,13 +690,8 @@ a {
 
 /* --- 响应式 -------------------------------------------------------------- */
 @media (max-width: 560px) {
-  .header-top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .site-nav {
-    padding-bottom: 0;
+  .header-sub {
+    align-items: baseline;
   }
 }
 
