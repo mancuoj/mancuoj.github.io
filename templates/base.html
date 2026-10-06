@@ -27,10 +27,12 @@
 {% block head %}{% endblock %}
 </head>
 <body>
+{% block header %}
 <header class="site-header">
   <a class="brand" href="{{ base }}/">{{ cfg.author }}<i>.</i></a>
   <div class="tagline">{{ cfg.subtitle }}</div>
 </header>
+{% endblock %}
 <main class="site-main">
 {% block content %}{% endblock %}
 </main>

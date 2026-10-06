@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}404 · {{ cfg.title }}{% endblock %}
-{% block description %}页面不存在{% endblock %}
+{% block description %}404 not found{% endblock %}
 
-{% block content %}
-<div class="notfound">404</div>
+{% block header %}
+<header class="site-header">
+  <h1 class="brand">404<i>.</i></h1>
+  <div class="tagline">Not Found · <a class="notfound-back" href="{{ base }}/">Back</a></div>
+</header>
 {% endblock %}
+
+{% block content %}{% endblock %}

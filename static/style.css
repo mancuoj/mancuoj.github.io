@@ -576,13 +576,18 @@ a {
 }
 
 /* --- 404 ---------------------------------------------------------------- */
-.notfound {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: clamp(3rem, 14vw, 6.5rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: var(--fg);
+.notfound-back {
+  font-size: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+}
+
+.notfound-back:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 /* --- 标签页 -------------------------------------------------------------- */
