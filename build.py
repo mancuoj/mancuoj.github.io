@@ -173,21 +173,27 @@ class GitHub:
             page += 1
         return out
 
-    def is_pinned(self, number: int) -> bool:
+    def pinned_numbers(self) -> set[int]:
+        """一次 GraphQL 取回所有置顶 issue 的编号（替代逐个 timeline 请求）。"""
+        if not self.token:
+            return set()
+        owner, _, name = self.repo.partition("/")
+        query = (
+            "query($owner:String!,$name:String!){"
+            "repository(owner:$owner,name:$name){pinnedIssues(first:100){nodes{issue{number}}}}}"
+        )
         try:
-            events = self._get(
-                f"{API}/repos/{self.repo}/issues/{number}/timeline",
-                per_page=100,
-            ).json()
-        except requests.RequestException:
-            return False
-        pinned = False
-        for event in events:
-            if event.get("event") == "pinned":
-                pinned = True
-            elif event.get("event") == "unpinned":
-                pinned = False
-        return pinned
+            resp = self.session.post(
+                f"{API}/graphql",
+                json={"query": query, "variables": {"owner": owner, "name": name}},
+                timeout=TIMEOUT,
+            )
+            resp.raise_for_status()
+            nodes = resp.json()["data"]["repository"]["pinnedIssues"]["nodes"]
+            return {n["issue"]["number"] for n in nodes}
+        except (requests.RequestException, KeyError, TypeError) as exc:
+            log(f"  ! 获取置顶 issue 失败, 跳过: {exc}")
+            return set()
 
 
 # --------------------------------------------------------------------------- #
@@ -219,12 +225,13 @@ class Builder:
     # -- 数据 --------------------------------------------------------------- #
     def collect(self) -> list[dict]:
         posts = []
+        pinned_numbers = self.gh.pinned_numbers()
         for issue in self.gh.issues():
             labels = issue.get("labels", [])
             names = [l["name"] for l in labels]
-            pinned = self.gh.is_pinned(issue["number"])
-            if self.pin_label and self.pin_label in names:
-                pinned = True
+            pinned = issue["number"] in pinned_numbers or (
+                bool(self.pin_label) and self.pin_label in names
+            )
             body = issue.get("body") or ""
             created = dt.datetime.fromisoformat(
                 issue["created_at"].replace("Z", "+00:00")
