@@ -21,7 +21,6 @@
   --code-bg: #efeeeb;
 
   --measure: 652px;
-  --page: 700px;
 }
 
 [data-theme="dark"] {
@@ -73,7 +72,7 @@ a {
 
 /* --- 页头：大字标识 + 小字导航 ------------------------------------------- */
 .site-header {
-  max-width: var(--page);
+  max-width: var(--measure);
   margin: 0 auto;
   padding: clamp(38px, 7vw, 66px) 24px 0;
   margin-bottom: clamp(40px, 7vw, 72px);
@@ -307,29 +306,10 @@ a {
   color: var(--accent);
 }
 
-.post-footer {
-  margin-top: 42px;
-}
-
-.post-footer .source-link {
-  font-size: 0.8rem;
-  color: var(--muted);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
-  transition: color 0.16s ease, text-decoration-color 0.16s ease;
-}
-
-.post-footer .source-link:hover {
-  color: var(--accent);
-  text-decoration-color: var(--accent);
-}
-
 /* --- 正文排版 ------------------------------------------------------------ */
 .markdown-body {
   font-size: 0.95rem;
-  line-height: 1.92;
+  line-height: 1.8;
   letter-spacing: 0.004em;
   color: var(--body);
   word-wrap: break-word;
@@ -626,36 +606,33 @@ a {
 
 /* --- 评论 ---------------------------------------------------------------- */
 .comments {
-  margin-top: 44px;
-}
-
-.comments-title {
-  margin-bottom: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--fg);
+  margin-top: 40px;
 }
 
 .comment-btn {
-  padding: 7px 14px;
-  border: 1px solid var(--hair);
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: color 0.16s ease, border-color 0.16s ease;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
 }
 
 .comment-btn:hover:not(:disabled) {
   color: var(--accent);
-  border-color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 .comment-btn:disabled {
   cursor: default;
   opacity: 0.6;
+  text-decoration: none;
 }
 
 /* --- 标签页 -------------------------------------------------------------- */
@@ -733,48 +710,6 @@ a {
 .empty {
   color: var(--faint);
   font-size: 0.86rem;
-}
-
-/* --- 页脚 ---------------------------------------------------------------- */
-.site-footer {
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding: 0 24px clamp(40px, 7vw, 64px);
-}
-
-.footer-inner {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--hair);
-  font-size: 0.76rem;
-  color: var(--faint);
-}
-
-.footer-links {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.footer-links a {
-  transition: color 0.16s ease;
-}
-
-.footer-links a:hover {
-  color: var(--accent);
-}
-
-.footer-links .sep {
-  opacity: 0.5;
-}
-
-.footer-note {
-  margin-top: 8px;
-  font-size: 0.76rem;
-  color: var(--faint);
 }
 
 /* --- 响应式 -------------------------------------------------------------- */

@@ -16,22 +16,15 @@
     <h1 class="post-title">{{ post.title }}</h1>
     <div class="post-meta">
       <time datetime="{{ post.date }}">{{ post.date }}</time>
-      <span class="dot">·</span>
-      <span>{{ post.reading }} min</span>
       {% for tag in post.tags %}<span class="dot">·</span><a class="tag" href="{{ base }}/tags.html#{{ tag.slug }}">{{ tag.name }}</a>{% endfor %}
     </div>
   </header>
 
   <div class="markdown-body">{{ post.body|safe }}</div>
-
-  <footer class="post-footer">
-    <a class="source-link" href="{{ post.source }}" target="_blank" rel="noopener">在 GitHub 上查看原文 →</a>
-  </footer>
 </article>
 
 {% if cfg.showComments %}
 <section class="comments">
-  <h2 class="comments-title">评论</h2>
   <button id="load-comments" class="comment-btn" type="button"
     data-repo="{{ cfg.commentsRepo }}"
     data-issue="{{ post.number }}">加载评论{% if post.comments %} ({{ post.comments }}){% endif %}</button>

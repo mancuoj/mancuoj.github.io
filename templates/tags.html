@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Index · {{ cfg.title }}{% endblock %}
+{% block title %}Tags · {{ cfg.title }}{% endblock %}
 {% block description %}全部文章与标签{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Index</h1>
+<h1 class="page-title">Tags</h1>
 
 <div class="tag-filter" id="tag-filter">
   <button class="chip is-active" type="button" data-tag="*">全部<span class="chip-count">{{ posts|length }}</span></button>

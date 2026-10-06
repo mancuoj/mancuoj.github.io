@@ -31,7 +31,7 @@
   <div class="header-top">
     <a class="brand" href="{{ base }}/">{{ cfg.author }}<i>.</i></a>
     <nav class="site-nav">
-      <a href="{{ base }}/tags.html">Index</a>
+      <a href="{{ base }}/tags.html">Tags</a>
       {% for item in cfg.nav %}<a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
       {% endfor %}{% if cfg.showRss %}<a href="{{ base }}/rss.xml" target="_blank" rel="noopener">RSS</a>
       {% endif %}<button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换主题">
@@ -45,13 +45,6 @@
 <main class="site-main">
 {% block content %}{% endblock %}
 </main>
-<footer class="site-footer">
-  <div class="footer-inner">
-    <span>© {{ now_year }} {{ cfg.author }}</span>
-    <span class="footer-links">{% for item in cfg.social %}<a href="{{ item.url }}"{% if item.url.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>{% if not loop.last %}<span class="sep">/</span>{% endif %}{% endfor %}</span>
-  </div>
-  {% if cfg.footer %}<p class="footer-note">{{ cfg.footer }}</p>{% endif %}
-</footer>
 <script src="{{ base }}/static/app.js?v={{ asset_ver }}" defer></script>
 </body>
 </html>
