@@ -266,7 +266,8 @@ class Builder:
                     ],
                 }
             )
-        posts.sort(key=lambda p: (p["pinned"], p["created"]), reverse=True)
+        # 置顶优先，其余按时间正序（旧 → 新）
+        posts.sort(key=lambda p: (0 if p["pinned"] else 1, p["created"]))
         return posts
 
     def tags_index(self, posts: list[dict]) -> list[dict]:
@@ -336,7 +337,7 @@ class Builder:
     def build_404(self, posts: list[dict]) -> None:
         html_out = self.render(
             "404.html",
-            posts=posts[:5],
+            posts=posts[-5:][::-1],
             page={"title": "404", "description": ""},
         )
         (self.out / "404.html").write_text(html_out, encoding="utf-8")
@@ -349,7 +350,7 @@ class Builder:
             return f"<![CDATA[{text}]]>"
 
         items = []
-        for p in posts:
+        for p in sorted(posts, key=lambda x: x["created"], reverse=True):
             items.append(
                 "\n".join(
                     [
