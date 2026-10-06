@@ -586,15 +586,21 @@ a {
 }
 
 /* 加载态：转圈 + 预留高度，避免点击后页面突然撑开 */
+#comments {
+  position: relative;
+}
+
 #comments.is-loading {
-  min-height: 220px;
+  min-height: 260px;
 }
 
 .comments-loading {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
-  padding: 20px 0;
   color: var(--muted);
   font-size: 0.8rem;
 }
@@ -614,18 +620,14 @@ a {
   }
 }
 
-/* 评论内容淡入 */
+/* 评论内容就绪后淡入 */
 iframe.utterances-frame {
-  animation: comment-fade 0.35s ease both;
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
-@keyframes comment-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+iframe.utterances-frame.is-ready {
+  opacity: 1;
 }
 
 .comments-fail {
@@ -750,6 +752,6 @@ iframe.utterances-frame {
   }
 
   iframe.utterances-frame {
-    animation: none;
+    transition: none;
   }
 }

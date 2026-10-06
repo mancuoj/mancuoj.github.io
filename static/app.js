@@ -63,17 +63,23 @@
       };
       box.appendChild(s);
 
-      /* 等 utterances 的 iframe 出现，撤掉加载态（内容本身会淡入） */
+      /* 等 iframe 渲染且高度稳定后再撤加载态，内容再淡入，避免塌陷/闪回 */
       var tries = 0;
+      var last = -1;
       var timer = setInterval(function () {
-        if (box.querySelector("iframe.utterances-frame")) {
+        var frame = box.querySelector("iframe.utterances-frame");
+        var h = frame ? Math.round(frame.getBoundingClientRect().height) : 0;
+        var ready = !!frame && h > 100 && h === last;
+        var giveUp = ++tries > 140;
+        if (ready || giveUp) {
           clearInterval(timer);
+          if (frame) frame.classList.add("is-ready");
           box.classList.remove("is-loading");
           loader.remove();
-        } else if (++tries > 130) {
-          clearInterval(timer);
+          return;
         }
-      }, 150);
+        last = h;
+      }, 120);
     });
   }
 
