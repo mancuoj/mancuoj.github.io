@@ -162,7 +162,7 @@ a {
   font-family: var(--mono);
   font-size: 0.8rem;
   letter-spacing: 0.02em;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .pin {
@@ -257,7 +257,7 @@ a {
   font-family: var(--mono);
   font-size: 0.66rem;
   letter-spacing: 0.04em;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .post-meta .dot {
