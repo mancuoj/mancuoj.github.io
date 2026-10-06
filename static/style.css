@@ -746,32 +746,15 @@ iframe.utterances-frame.is-ready {
   navigation: auto;
 }
 
-/* 页头作为共享元素保持不动, 避免文字缩放的形变 */
+/* 页头作为共享元素保持不动 */
 .site-header {
   view-transition-name: header;
 }
 
-/* 默认(root) = 跨页面导航: 内容轻微上移 */
-@keyframes vt-out {
-  to {
-    opacity: 0;
-    transform: translateY(-14px);
-  }
-}
-
-@keyframes vt-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-}
-
-::view-transition-old(root) {
-  animation: 0.3s ease both vt-out;
-}
-
-::view-transition-new(root) {
-  animation: 0.3s ease both vt-in;
+/* 命名元素(标题形变)用稍缓的时长 */
+::view-transition-group(*) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 主题切换 (同页, type=theme): 从点击处径向扩散 (算法参考 VitePress) */
