@@ -741,12 +741,13 @@ iframe.utterances-frame.is-ready {
   }
 }
 
-/* --- 跨页面视图过渡 (View Transitions, Chromium 系) ---------------------- */
+/* --- 视图过渡 (View Transitions, Chromium/Safari) ----------------------- */
 @view-transition {
   navigation: auto;
+  types: nav;
 }
 
-/* 页头作为共享元素保持不动, 其余内容做轻微"上移"过渡, 避免文字缩放的形变 */
+/* 页头作为共享元素保持不动, 避免文字缩放的形变 */
 .site-header {
   view-transition-name: header;
 }
@@ -765,13 +766,16 @@ iframe.utterances-frame.is-ready {
   }
 }
 
-::view-transition-old(root) {
+/* 跨页面导航: 内容轻微上移 (type=nav) */
+html:active-view-transition-type(nav)::view-transition-old(root) {
   animation: 0.26s ease both vt-out;
 }
 
-::view-transition-new(root) {
+html:active-view-transition-type(nav)::view-transition-new(root) {
   animation: 0.26s ease both vt-in;
 }
+
+/* 主题切换 (type=theme) 用浏览器默认的简单 cross-fade, 不额外写动画 */
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),

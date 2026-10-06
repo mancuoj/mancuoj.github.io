@@ -29,11 +29,20 @@
     syncLabel();
     switcher.addEventListener("click", function () {
       var next = currentTheme() === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try {
-        localStorage.setItem("theme", next);
-      } catch (e) {}
-      syncLabel();
+      var apply = function () {
+        root.setAttribute("data-theme", next);
+        try {
+          localStorage.setItem("theme", next);
+        } catch (e) {}
+        syncLabel();
+      };
+      var reduceMotion =
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduceMotion && document.startViewTransition) {
+        document.startViewTransition({ update: apply, types: ["theme"] });
+      } else {
+        apply();
+      }
       utterancesTheme(next);
     });
   }
