@@ -285,7 +285,7 @@ a {
 /* --- 正文排版 ------------------------------------------------------------ */
 .markdown-body {
   font-size: 0.95rem;
-  line-height: 1.8;
+  line-height: 1.65;
   letter-spacing: 0.004em;
   color: var(--body);
   word-wrap: break-word;
@@ -300,7 +300,7 @@ a {
 }
 
 .markdown-body p {
-  margin-bottom: 21px;
+  margin-bottom: 12px;
 }
 
 .markdown-body h1,
