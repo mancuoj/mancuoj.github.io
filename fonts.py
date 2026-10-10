@@ -18,6 +18,7 @@ from util import CACHE, log
 
 FONTDIR = CACHE / "fonts"
 SUBSETDIR = CACHE / "subset"
+CJK_TTF = FONTDIR / "LXGWWenKaiScreen.ttf"
 
 # (字体名, 字重) -> 下载地址（拉丁字体本身已是子集，仍会再裁一次）
 LATIN_FONTS = {
@@ -130,7 +131,7 @@ class Fonts:
                     f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
                     f'font-display:swap;src:url("{url}") format("woff2")}}'
                 )
-        ttf = FONTDIR / "LXGWWenKaiScreen.ttf"
+        ttf = CJK_TTF
         local = fontdir / "lxgwwenkai-screen.woff2"
         if self._download(CJK_TTF_URL, ttf) and self._subset_cached(ttf, local, text):
             rules.append(

@@ -34,6 +34,7 @@ from urllib3.util.retry import Retry
 
 import backup
 import feeds
+import og
 from fonts import Fonts
 from models import Post, Tag, group_by_year, tags_index
 from util import CACHE, ROOT, log, plain_excerpt, slugify
@@ -41,6 +42,8 @@ from util import CACHE, ROOT, log, plain_excerpt, slugify
 API = "https://api.github.com"
 TIMEOUT = 30
 RETRIES = 3
+# 用来探测 GitHub 渲染结果的固定文本；它的哈希作为缓存签名，渲染器一变缓存自动失效
+PROBE_MD = "probe\n\n- a\n\n`b`"
 
 
 # --------------------------------------------------------------------------- #
@@ -108,14 +111,14 @@ class Markdown:
                 path.unlink()
 
     def render_all(self, texts: list[str]) -> list[str]:
-        renderer = "api"
         try:
-            rendered = [self._one("api", text) for text in texts]
+            signature = "api@" + hashlib.sha1(self._api(PROBE_MD).encode()).hexdigest()[:8]
+            rendered = [self._one(signature, text) for text in texts]
         except requests.RequestException as exc:
             log(f"  ! GitHub markdown API 失败, 整批回退本地渲染: {exc}")
-            renderer = "local"
-            rendered = [self._one("local", text) for text in texts]
-        self._prune(renderer, texts)
+            signature = "local"
+            rendered = [self._one(signature, text) for text in texts]
+        self._prune(signature, texts)
         return rendered
 
 
@@ -322,6 +325,7 @@ class Builder:
         feeds.build_robots(self.base, self.out)
         self.copy_static()
         self.fonts.build()
+        og.build(posts, self.out, self.cfg["author"])
         try:
             shown = self.out.relative_to(ROOT)
         except ValueError:

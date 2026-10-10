@@ -9,7 +9,7 @@
 <meta property="og:description" content="{% block ogdesc %}{{ cfg.description }}{% endblock %}">
 <meta property="og:type" content="{% block ogtype %}website{% endblock %}">
 <meta property="og:url" content="{% block ogurl %}{{ base }}/{% endblock %}">
-<meta property="og:image" content="{{ cfg.avatar }}">
+<meta property="og:image" content="{% block ogimage %}{{ cfg.avatar }}{% endblock %}">
 {% block ogmeta %}{% endblock %}
 <link rel="icon" href="{{ cfg.avatar }}">
 {% if cfg.showRss %}<link rel="alternate" type="application/rss+xml" title="{{ cfg.title }}" href="{{ base }}/rss.xml">
