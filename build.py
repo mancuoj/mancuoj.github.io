@@ -34,20 +34,17 @@ from urllib3.util.retry import Retry
 
 import backup
 import feeds
-import og
 from fonts import Fonts
 from models import Post, Tag, group_by_year, tags_index
-from util import CACHE, ROOT, log, plain_excerpt, slugify
+from util import ROOT, log, plain_excerpt, slugify
 
 API = "https://api.github.com"
 TIMEOUT = 30
 RETRIES = 3
-# 用来探测 GitHub 渲染结果的固定文本；它的哈希作为缓存签名，渲染器一变缓存自动失效
-PROBE_MD = "probe\n\n- a\n\n`b`"
 
 
 # --------------------------------------------------------------------------- #
-# Markdown: 优先 GitHub API, 失败回退本地渲染
+# Markdown: 本地渲染（gfm-like + 脚注 / 定义列表 / 任务列表）
 # --------------------------------------------------------------------------- #
 def _highlight(code: str, lang: str, _attrs) -> str:
     try:
@@ -65,61 +62,6 @@ def _local_md() -> MarkdownIt:
     )
     md.use(footnote_plugin).use(deflist_plugin).use(tasklists_plugin)
     return md
-
-
-class Markdown:
-    """优先用 GitHub API 渲染；整批一致，并按内容哈希缓存。
-
-    同一构建里不会混用两种渲染器：只要有一篇 API 渲染失败，整批回退本地。
-    """
-
-    def __init__(self, session: requests.Session, repo: str, token: str | None):
-        self.session = session
-        self.repo = repo
-        self.token = token
-        self.local = _local_md()
-
-    def _api(self, text: str) -> str:
-        resp = self.session.post(
-            f"{API}/markdown",
-            json={"text": text, "mode": "gfm", "context": self.repo},
-            timeout=TIMEOUT,
-        )
-        resp.raise_for_status()
-        return resp.text
-
-    @staticmethod
-    def _key(renderer: str, text: str) -> str:
-        return hashlib.sha1(f"{renderer}\x00{text}".encode()).hexdigest()
-
-    def _one(self, renderer: str, text: str) -> str:
-        if not text:
-            return ""
-        cached = CACHE / "markdown" / f"{self._key(renderer, text)}.html"
-        if cached.exists():
-            return cached.read_text(encoding="utf-8")
-        rendered = self._api(text) if renderer == "api" else self.local.render(text)
-        cached.parent.mkdir(parents=True, exist_ok=True)
-        cached.write_text(rendered, encoding="utf-8")
-        return rendered
-
-    def _prune(self, renderer: str, texts: list[str]) -> None:
-        """只保留本次用到的缓存，避免目录无限增长。"""
-        keep = {f"{self._key(renderer, text)}.html" for text in texts if text}
-        for path in (CACHE / "markdown").glob("*.html"):
-            if path.name not in keep:
-                path.unlink()
-
-    def render_all(self, texts: list[str]) -> list[str]:
-        try:
-            signature = "api@" + hashlib.sha1(self._api(PROBE_MD).encode()).hexdigest()[:8]
-            rendered = [self._one(signature, text) for text in texts]
-        except requests.RequestException as exc:
-            log(f"  ! GitHub markdown API 失败, 整批回退本地渲染: {exc}")
-            signature = "local"
-            rendered = [self._one(signature, text) for text in texts]
-        self._prune(signature, texts)
-        return rendered
 
 
 # --------------------------------------------------------------------------- #
@@ -209,7 +151,7 @@ class Builder:
         self.out = out_dir
         self.tz = dt.timezone(dt.timedelta(hours=cfg.get("timezone", 8)))
         self.base = (base or cfg["homeUrl"]).rstrip("/")
-        self.md = Markdown(gh.session, gh.repo, gh.token)
+        self.md = _local_md()
         self.fonts = Fonts(out_dir, gh.session)
         self.exclude = set(cfg.get("excludeLabels", []))
         self.pin_label = cfg.get("pinLabel")
@@ -231,7 +173,7 @@ class Builder:
         pinned_numbers = self.gh.pinned_numbers()
         issues = self.gh.issues()
         raws = [issue.get("body") or "" for issue in issues]
-        rendered = self.md.render_all(raws)
+        rendered = [self.md.render(raw) for raw in raws]
         posts: list[Post] = []
         for issue, raw, body in zip(issues, raws, rendered, strict=True):
             names = [label["name"] for label in issue.get("labels", [])]
@@ -325,7 +267,6 @@ class Builder:
         feeds.build_robots(self.base, self.out)
         self.copy_static()
         self.fonts.build()
-        og.build(posts, self.out, self.cfg)
         try:
             shown = self.out.relative_to(ROOT)
         except ValueError:

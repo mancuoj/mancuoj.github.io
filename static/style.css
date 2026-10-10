@@ -427,39 +427,7 @@ a {
   vertical-align: middle;
 }
 
-.markdown-body .markdown-alert {
-  margin: 22px 0;
-  padding: 0.5em 1em;
-  border-left: 2px solid var(--faint);
-  color: var(--muted);
-}
-
-.markdown-body .markdown-alert-title {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  margin-bottom: 0.2em;
-  color: var(--fg);
-}
-
-.markdown-body .markdown-alert-note {
-  border-left-color: var(--accent);
-}
-
-.markdown-body .markdown-alert-warning {
-  border-left-color: #d97706;
-}
-
-.markdown-body .markdown-alert-caution {
-  border-left-color: #dc2626;
-}
-
-.markdown-body .markdown-alert-tip,
-.markdown-body .markdown-alert-important {
-  border-left-color: #16a34a;
-}
-
-/* 代码语法高亮：兼容 GitHub / Pygments 两套 class */
+/* 代码语法高亮（Pygments 短 class 名）*/
 .markdown-body .highlight {
   margin: 22px 0;
 }
@@ -470,9 +438,7 @@ a {
 
 .markdown-body code .c,
 .markdown-body code .c1,
-.markdown-body code .cm,
-.markdown-body code .pl-c,
-.markdown-body code .pl-c1 {
+.markdown-body code .cm {
   color: #6b7280;
   font-style: italic;
 }
@@ -480,84 +446,63 @@ a {
 .markdown-body code .k,
 .markdown-body code .kd,
 .markdown-body code .kn,
-.markdown-body code .kc,
-.markdown-body code .pl-k {
+.markdown-body code .kc {
   color: #cf222e;
 }
 
 .markdown-body code .s,
 .markdown-body code .s1,
 .markdown-body code .s2,
-.markdown-body code .sb,
-.markdown-body code .pl-s,
-.markdown-body code .pl-pds,
-.markdown-body code .pl-s1 {
+.markdown-body code .sb {
   color: #0a3069;
 }
 
 .markdown-body code .m,
 .markdown-body code .mi,
-.markdown-body code .mf,
-.markdown-body code .pl-mh,
-.markdown-body code .pl-ml {
+.markdown-body code .mf {
   color: #0550ae;
 }
 
 .markdown-body code .nf,
-.markdown-body code .na,
-.markdown-body code .pl-en,
-.markdown-body code .pl-ent {
+.markdown-body code .na {
   color: #8250df;
 }
 
-.markdown-body code .nt,
-.markdown-body code .pl-v,
-.markdown-body code .pl-smi {
+.markdown-body code .nt {
   color: #953800;
 }
 
 .markdown-body code .o,
-.markdown-body code .p,
-.markdown-body code .pl-pse {
+.markdown-body code .p {
   color: var(--muted);
 }
 
 [data-theme="dark"] .markdown-body code .k,
 [data-theme="dark"] .markdown-body code .kd,
 [data-theme="dark"] .markdown-body code .kn,
-[data-theme="dark"] .markdown-body code .kc,
-[data-theme="dark"] .markdown-body code .pl-k {
+[data-theme="dark"] .markdown-body code .kc {
   color: #ff7b72;
 }
 
 [data-theme="dark"] .markdown-body code .s,
 [data-theme="dark"] .markdown-body code .s1,
 [data-theme="dark"] .markdown-body code .s2,
-[data-theme="dark"] .markdown-body code .sb,
-[data-theme="dark"] .markdown-body code .pl-s,
-[data-theme="dark"] .markdown-body code .pl-pds,
-[data-theme="dark"] .markdown-body code .pl-s1 {
+[data-theme="dark"] .markdown-body code .sb {
   color: #a5d6ff;
 }
 
 [data-theme="dark"] .markdown-body code .m,
 [data-theme="dark"] .markdown-body code .mi,
-[data-theme="dark"] .markdown-body code .mf,
-[data-theme="dark"] .markdown-body code .pl-mh,
-[data-theme="dark"] .markdown-body code .pl-ml {
+[data-theme="dark"] .markdown-body code .mf {
   color: #79c0ff;
 }
 
 [data-theme="dark"] .markdown-body code .nf,
-[data-theme="dark"] .markdown-body code .na,
-[data-theme="dark"] .markdown-body code .pl-en,
-[data-theme="dark"] .markdown-body code .pl-ent {
+[data-theme="dark"] .markdown-body code .na {
   color: #d2a8ff;
 }
 
-[data-theme="dark"] .markdown-body code .nt,
-[data-theme="dark"] .markdown-body code .pl-v,
-[data-theme="dark"] .markdown-body code .pl-smi {
+[data-theme="dark"] .markdown-body code .nt {
   color: #ffa657;
 }
 
