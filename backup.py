@@ -44,7 +44,6 @@ def write_backup(posts: list[Post], out_dir: Path) -> None:
                 "date": post.date,
                 "updated": post.updated.strftime("%Y-%m-%d"),
                 "tags": [tag.name for tag in post.tags],
-                "url": post.url,
                 "source": post.source,
             }
         )
