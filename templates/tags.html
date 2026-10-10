@@ -6,11 +6,11 @@
 {% block content %}
 <h1 class="sr-only">Tags</h1>
 
-<div class="tag-filter" id="tag-filter">
-  <button class="chip is-active" type="button" data-tag="*">All</button>
+<div class="tag-filter" id="tag-filter" role="group" aria-label="按标签筛选">
+  <button class="chip is-active" type="button" data-tag="*" aria-pressed="true">All</button>
   {% for t in tags %}
   <span class="sep" aria-hidden="true">·</span>
-  <button class="chip" type="button" data-tag="{{ t.slug }}">{{ t.name }}</button>
+  <button class="chip" type="button" data-tag="{{ t.slug }}" aria-pressed="false">{{ t.name }}</button>
   {% endfor %}
 </div>
 

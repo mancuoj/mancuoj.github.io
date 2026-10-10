@@ -43,7 +43,9 @@
       if (!chip) return;
       activeTag = chip.dataset.tag;
       filterRoot.querySelectorAll(".chip").forEach(function (c) {
-        c.classList.toggle("is-active", c === chip);
+        var on = c === chip;
+        c.classList.toggle("is-active", on);
+        c.setAttribute("aria-pressed", on ? "true" : "false");
       });
       apply();
     });
