@@ -103,6 +103,13 @@ class Fonts:
         chars.update(EXTRA_CHARS)
         return "".join(sorted(c for c in chars if c == " " or c.isprintable()))
 
+    def _prune_subset(self, text: str) -> None:
+        """只保留当前内容的裁剪结果，避免缓存目录无限增长。"""
+        keep = hashlib.sha1(text.encode()).hexdigest()[:16]
+        for path in SUBSETDIR.glob("*"):
+            if path.is_dir() and path.name != keep:
+                shutil.rmtree(path, ignore_errors=True)
+
     def build(self) -> None:
         text = self._collect_text()
         fontdir = self.out / "static" / "fonts"
@@ -136,4 +143,5 @@ class Fonts:
             rules.insert(0, f'@import url("{CJK_CDN_CSS}");')
             cjk = "CDN 回退"
         (self.out / "static" / "fonts.css").write_text("\n".join(rules) + "\n", encoding="utf-8")
+        self._prune_subset(text)
         log(f"  字体: {cjk}, 自托管合计 {total / 1024:.0f} KB")
