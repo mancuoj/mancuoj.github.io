@@ -214,8 +214,7 @@ class Builder:
                     year=self._local_time(issue["created_at"]).strftime("%Y"),
                     url=f"{self.base}/post/{issue['number']}.html",
                     source=issue["html_url"],
-                    pinned=issue["number"] in pinned_numbers
-                    or (bool(self.pin_label) and self.pin_label in names),
+                    pinned=issue["number"] in pinned_numbers or (bool(self.pin_label) and self.pin_label in names),
                     tags=[Tag(name=n, slug=slugify(n)) for n in names if n not in self.exclude],
                 )
             )

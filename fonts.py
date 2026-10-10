@@ -57,7 +57,10 @@ class Fonts:
         try:
             subprocess.run(
                 [
-                    sys.executable, "-m", "fontTools.subset", str(src),
+                    sys.executable,
+                    "-m",
+                    "fontTools.subset",
+                    str(src),
                     f"--text={text}",
                     "--flavor=woff2",
                     f"--output-file={dest}",
@@ -65,7 +68,8 @@ class Fonts:
                     "--no-hinting",
                     "--name-IDs=*",
                 ],
-                check=True, capture_output=True,
+                check=True,
+                capture_output=True,
             )
             return dest.exists() and dest.stat().st_size > 0
         except (subprocess.CalledProcessError, OSError) as exc:

@@ -60,14 +60,10 @@ def build_sitemap(posts: list[Post], cfg: dict, base: str, out: Path) -> None:
         mod = f"<lastmod>{newest}</lastmod>" if newest else ""
         urls.append(f"  <url><loc>{loc}</loc>{mod}</url>")
     for p in posts:
-        urls.append(
-            f"  <url><loc>{p.url}</loc><lastmod>{p.updated.strftime(SITE_DATE)}</lastmod></url>"
-        )
+        urls.append(f"  <url><loc>{p.url}</loc><lastmod>{p.updated.strftime(SITE_DATE)}</lastmod></url>")
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "\n".join(urls)
-        + "\n</urlset>\n"
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     )
     (out / "sitemap.xml").write_text(xml, encoding="utf-8")
 
