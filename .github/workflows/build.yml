@@ -4,8 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "0 16 * * *" # 每天 00:00 (UTC+8) 重建一次
   issues:
     types:
       - opened
@@ -35,7 +33,6 @@ jobs:
     if: >-
       github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'schedule' ||
       github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
