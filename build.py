@@ -32,12 +32,12 @@ from pygments.util import ClassNotFound
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+import backup
 import feeds
 from fonts import Fonts
 from models import Post, Tag, group_by_year, tags_index
-from util import log, plain_excerpt, slugify
+from util import CACHE, ROOT, log, plain_excerpt, slugify
 
-ROOT = Path(__file__).resolve().parent
 API = "https://api.github.com"
 TIMEOUT = 30
 RETRIES = 3
@@ -65,30 +65,58 @@ def _local_md() -> MarkdownIt:
 
 
 class Markdown:
+    """优先用 GitHub API 渲染；整批一致，并按内容哈希缓存。
+
+    同一构建里不会混用两种渲染器：只要有一篇 API 渲染失败，整批回退本地。
+    """
+
     def __init__(self, session: requests.Session, repo: str, token: str | None):
         self.session = session
         self.repo = repo
         self.token = token
         self.local = _local_md()
-        self.api_ok: bool | None = None
 
-    def render(self, text: str) -> str:
+    def _api(self, text: str) -> str:
+        resp = self.session.post(
+            f"{API}/markdown",
+            json={"text": text, "mode": "gfm", "context": self.repo},
+            timeout=TIMEOUT,
+        )
+        resp.raise_for_status()
+        return resp.text
+
+    @staticmethod
+    def _key(renderer: str, text: str) -> str:
+        return hashlib.sha1(f"{renderer}\x00{text}".encode()).hexdigest()
+
+    def _one(self, renderer: str, text: str) -> str:
         if not text:
             return ""
-        if self.api_ok is not False:
-            try:
-                resp = self.session.post(
-                    f"{API}/markdown",
-                    json={"text": text, "mode": "gfm", "context": self.repo},
-                    timeout=TIMEOUT,
-                )
-                resp.raise_for_status()
-                self.api_ok = True
-                return resp.text
-            except requests.RequestException as exc:
-                log(f"  ! GitHub markdown API 失败, 回退本地渲染: {exc}")
-                self.api_ok = False
-        return self.local.render(text)
+        cached = CACHE / "markdown" / f"{self._key(renderer, text)}.html"
+        if cached.exists():
+            return cached.read_text(encoding="utf-8")
+        rendered = self._api(text) if renderer == "api" else self.local.render(text)
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        cached.write_text(rendered, encoding="utf-8")
+        return rendered
+
+    def _prune(self, renderer: str, texts: list[str]) -> None:
+        """只保留本次用到的缓存，避免目录无限增长。"""
+        keep = {f"{self._key(renderer, text)}.html" for text in texts if text}
+        for path in (CACHE / "markdown").glob("*.html"):
+            if path.name not in keep:
+                path.unlink()
+
+    def render_all(self, texts: list[str]) -> list[str]:
+        renderer = "api"
+        try:
+            rendered = [self._one("api", text) for text in texts]
+        except requests.RequestException as exc:
+            log(f"  ! GitHub markdown API 失败, 整批回退本地渲染: {exc}")
+            renderer = "local"
+            rendered = [self._one("local", text) for text in texts]
+        self._prune(renderer, texts)
+        return rendered
 
 
 # --------------------------------------------------------------------------- #
@@ -198,20 +226,24 @@ class Builder:
     # -- 数据 --------------------------------------------------------------- #
     def collect(self) -> list[Post]:
         pinned_numbers = self.gh.pinned_numbers()
+        issues = self.gh.issues()
+        raws = [issue.get("body") or "" for issue in issues]
+        rendered = self.md.render_all(raws)
         posts: list[Post] = []
-        for issue in self.gh.issues():
+        for issue, raw, body in zip(issues, raws, rendered, strict=True):
             names = [label["name"] for label in issue.get("labels", [])]
-            body = issue.get("body") or ""
+            created = self._local_time(issue["created_at"])
             posts.append(
                 Post(
                     number=issue["number"],
                     title=issue["title"],
-                    body=self.md.render(body),
-                    excerpt=plain_excerpt(body),
-                    created=self._local_time(issue["created_at"]),
+                    raw=raw,
+                    body=body,
+                    excerpt=plain_excerpt(raw),
+                    created=created,
                     updated=self._local_time(issue["updated_at"]),
-                    date=self._local_time(issue["created_at"]).strftime("%Y-%m-%d"),
-                    year=self._local_time(issue["created_at"]).strftime("%Y"),
+                    date=created.strftime("%Y-%m-%d"),
+                    year=created.strftime("%Y"),
                     url=f"{self.base}/post/{issue['number']}.html",
                     source=issue["html_url"],
                     pinned=issue["number"] in pinned_numbers or (bool(self.pin_label) and self.pin_label in names),
@@ -274,6 +306,7 @@ class Builder:
         posts = self.collect()
         log(f"  共 {len(posts)} 篇")
         tags = tags_index(posts)
+        backup.write_backup(posts, ROOT / "backup")
         self.env.globals["asset_ver"] = self._asset_ver(posts)
 
         if self.out.exists():

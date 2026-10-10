@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
 from pathlib import Path
 
+import backup
 import feeds
 from models import Post, Tag, group_by_year, tags_index
 from util import plain_excerpt, slugify
@@ -14,6 +16,7 @@ def make_post(number: int, year: str = "2026", tags: list[Tag] | None = None) ->
     return Post(
         number=number,
         title=f"文章 {number}",
+        raw="",
         body="",
         excerpt="",
         created=dt.datetime(2024, 1, 1),
@@ -68,3 +71,26 @@ def test_rss_does_not_double_escape_description(tmp_path: Path) -> None:
     xml = (tmp_path / "rss.xml").read_text(encoding="utf-8")
     assert "A &amp; B" in xml
     assert "<![CDATA[x & y < z]]>" in xml
+
+
+def test_backup_writes_markdown_and_index(tmp_path: Path) -> None:
+    post = make_post(7, tags=[Tag("notes", "notes")])
+    post.title = "十月记"
+    post.raw = "# 标题\n\n正文"
+    backup.write_backup([post], tmp_path)
+    md = (tmp_path / "posts" / "0007-十月记.md").read_text(encoding="utf-8")
+    assert md.startswith("---\n")
+    assert 'title: "十月记"' in md
+    assert "# 标题" in md
+    index = json.loads((tmp_path / "index.json").read_text(encoding="utf-8"))
+    assert index[0]["number"] == 7
+    assert index[0]["tags"] == ["notes"]
+
+
+def test_backup_removes_stale_files(tmp_path: Path) -> None:
+    stale = tmp_path / "posts"
+    stale.mkdir(parents=True)
+    (stale / "0001-old.md").write_text("x", encoding="utf-8")
+    backup.write_backup([make_post(2)], tmp_path)
+    assert not (stale / "0001-old.md").exists()
+    assert len(list(stale.glob("*.md"))) == 1

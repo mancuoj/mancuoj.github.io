@@ -4,5 +4,5 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 docs/
-.fontcache/
+.cache/
 .DS_Store

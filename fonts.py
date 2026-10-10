@@ -1,6 +1,6 @@
 """字体管线：下载 → 按页面用到的字裁剪 → 自托管。
 
-裁剪结果按正文哈希缓存在 .fontcache/subset/<hash>/，正文没变就跳过。
+缓存放在 .cache/：fonts/ 存原始下载，subset/ 按正文哈希存裁剪结果。
 """
 
 from __future__ import annotations
@@ -14,10 +14,10 @@ from pathlib import Path
 
 import requests
 
-from util import log
+from util import CACHE, log
 
-ROOT = Path(__file__).resolve().parent
-FONTCACHE = ROOT / ".fontcache"
+FONTDIR = CACHE / "fonts"
+SUBSETDIR = CACHE / "subset"
 
 # (字体名, 字重) -> 下载地址（拉丁字体本身已是子集，仍会再裁一次）
 LATIN_FONTS = {
@@ -79,8 +79,8 @@ class Fonts:
 
     def _subset_cached(self, src: Path, dest: Path, text: str) -> bool:
         """按正文哈希缓存裁剪结果，正文没变就复用。"""
-        key = hashlib.sha1(text.encode("utf-8")).hexdigest()[:16]
-        cached = FONTCACHE / "subset" / key / dest.name
+        key = hashlib.sha1(text.encode()).hexdigest()[:16]
+        cached = SUBSETDIR / key / dest.name
         if cached.exists() and cached.stat().st_size > 0:
             shutil.copyfile(cached, dest)
             return True
@@ -110,7 +110,7 @@ class Fonts:
         rules: list[str] = []
         total = 0
         for (family, weight), url in LATIN_FONTS.items():
-            src = FONTCACHE / url.rsplit("/", 1)[-1]
+            src = FONTDIR / url.rsplit("/", 1)[-1]
             local = fontdir / src.name
             if self._download(url, src) and self._subset_cached(src, local, text):
                 rules.append(
@@ -123,7 +123,7 @@ class Fonts:
                     f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
                     f'font-display:swap;src:url("{url}") format("woff2")}}'
                 )
-        ttf = FONTCACHE / "LXGWWenKaiScreen.ttf"
+        ttf = FONTDIR / "LXGWWenKaiScreen.ttf"
         local = fontdir / "lxgwwenkai-screen.woff2"
         if self._download(CJK_TTF_URL, ttf) and self._subset_cached(ttf, local, text):
             rules.append(

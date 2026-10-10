@@ -19,7 +19,7 @@ on:
       - unpinned
 
 permissions:
-  contents: read
+  contents: write
   issues: read
   pages: write
   id-token: write
@@ -56,16 +56,28 @@ jobs:
           uv run ruff format --check .
           uv run pytest -q
 
-      - name: Cache fonts
+      - name: Cache build cache
         uses: actions/cache@v4
         with:
-          path: .fontcache
-          key: fonts-lxgwwenkai-screen-v1.522-openrunde-syne
+          path: .cache
+          key: blog-cache-v1
 
       - name: Build
         run: uv run python build.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit content backup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backup
+          if git diff --cached --quiet; then
+            echo "内容无变化，跳过提交"
+          else
+            git commit -m "chore: 更新内容备份 [skip ci]"
+            git push
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -16,6 +16,7 @@ class Tag:
 class Post:
     number: int
     title: str
+    raw: str  # issue 原始 Markdown（用于备份）
     body: str  # 渲染后的 HTML
     excerpt: str
     created: dt.datetime

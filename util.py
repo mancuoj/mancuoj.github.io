@@ -1,9 +1,13 @@
-"""通用工具：日志与文本处理。"""
+"""通用工具：路径、日志与文本处理。"""
 
 from __future__ import annotations
 
 import re
 import unicodedata
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+CACHE = ROOT / ".cache"
 
 
 def log(*args) -> None:
