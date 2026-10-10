@@ -11,7 +11,7 @@
 <meta property="og:url" content="{% block ogurl %}{{ base }}/{% endblock %}">
 <meta property="og:image" content="{{ cfg.avatar }}">
 {% block ogmeta %}{% endblock %}
-<link rel="icon" href="{{ cfg.avatar }}">
+<link rel="icon" href="{{ base }}/static/favicon.svg" type="image/svg+xml">
 {% if cfg.showRss %}<link rel="alternate" type="application/rss+xml" title="{{ cfg.title }}" href="{{ base }}/rss.xml">
 {% endif %}<link rel="stylesheet" href="{{ base }}/static/fonts.css?v={{ asset_ver }}">
 <link rel="stylesheet" href="{{ base }}/static/style.css?v={{ asset_ver }}">

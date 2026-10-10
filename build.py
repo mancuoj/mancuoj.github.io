@@ -5,21 +5,18 @@
     python build.py [--out docs] [--config config.json] [--base URL]
 
 数据来源: GitHub Issues (open 状态, 排除 Pull Request)。
-产物: 静态 HTML / RSS / sitemap, 默认输出到 docs/。
+产物: 静态 HTML / RSS / sitemap / robots, 默认输出到 docs/。
 """
 
 from __future__ import annotations
 
 import argparse
 import datetime as dt
-import html
+import hashlib
 import json
 import os
-import re
 import shutil
-import subprocess
 import sys
-import unicodedata
 from pathlib import Path
 
 import requests
@@ -32,56 +29,18 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+import feeds
+from fonts import Fonts
+from models import Post, Tag, group_by_year, tags_index
+from util import log, plain_excerpt, slugify
 
 ROOT = Path(__file__).resolve().parent
 API = "https://api.github.com"
 TIMEOUT = 30
-
-# --- 字体：构建时按用到的字裁剪后自托管 ------------------------------------- #
-FONTCACHE = ROOT / ".fontcache"
-# (font-family, weight) -> 下载地址（拉丁字体已是子集，仍会再裁一次）
-LATIN_FONTS = {
-    ("Open Runde", 400): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-400-normal.woff2",
-    ("Open Runde", 500): "https://cdn.jsdelivr.net/npm/@fontsource/open-runde/files/open-runde-latin-500-normal.woff2",
-    ("Syne", 700): "https://cdn.jsdelivr.net/npm/@fontsource/syne/files/syne-latin-700-normal.woff2",
-}
-CJK_FAMILY = "LXGW WenKai Screen"
-CJK_TTF_URL = "https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.522/LXGWWenKaiScreen.ttf"
-CJK_CDN_CSS = "https://cn-font.claude-code-best.win/packages/lywkpmydb/dist/LXGWWenKaiScreen/result.css"
-
-
-# --------------------------------------------------------------------------- #
-# 工具
-# --------------------------------------------------------------------------- #
-def log(*args):
-    print(*args, flush=True)
-
-
-def slugify(text: str) -> str:
-    """生成稳定的 URL 片段; 中文标签直接保留。"""
-    text = unicodedata.normalize("NFKC", str(text)).strip().lower()
-    text = re.sub(r"[\s/\\]+", "-", text)
-    text = re.sub(r"[^\w\u4e00-\u9fff.-]", "", text)
-    return text or "tag"
-
-
-def plain_excerpt(md_text: str, limit: int = 160) -> str:
-    """从 Markdown 正文里取第一段纯文本做摘要。"""
-    if not md_text:
-        return ""
-    text = re.sub(r"```.*?```", "", md_text, flags=re.S)
-    text = re.sub(r"`[^`]*`", "", text)
-    text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)
-    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
-    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.M)
-    text = re.sub(r"[>*_~]", "", text)
-    for para in [p.strip() for p in text.split("\n\n") if p.strip()]:
-        text = para
-        break
-    text = re.sub(r"\s+", " ", text).strip()
-    if len(text) > limit:
-        text = text[:limit].rstrip() + "…"
-    return text
+RETRIES = 3
 
 
 # --------------------------------------------------------------------------- #
@@ -140,6 +99,18 @@ class GitHub:
         self.repo = repo
         self.token = token
         self.session = requests.Session()
+        retry = Retry(
+            total=RETRIES,
+            connect=RETRIES,
+            read=RETRIES,
+            backoff_factor=0.5,
+            status_forcelist=(429, 500, 502, 503, 504),
+            allowed_methods=None,
+            respect_retry_after_header=True,
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
         headers = {
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
@@ -176,6 +147,7 @@ class GitHub:
     def pinned_numbers(self) -> set[int]:
         """一次 GraphQL 取回所有置顶 issue 的编号（替代逐个 timeline 请求）。"""
         if not self.token:
+            log("  ! 未提供 token, 跳过原生置顶检测")
             return set()
         owner, _, name = self.repo.partition("/")
         query = (
@@ -207,6 +179,7 @@ class Builder:
         self.tz = dt.timezone(dt.timedelta(hours=cfg.get("timezone", 8)))
         self.base = (base or cfg["homeUrl"]).rstrip("/")
         self.md = Markdown(gh.session, gh.repo, gh.token)
+        self.fonts = Fonts(out_dir, gh.session)
         self.exclude = set(cfg.get("excludeLabels", []))
         self.pin_label = cfg.get("pinLabel")
         self.env = Environment(
@@ -217,140 +190,76 @@ class Builder:
         )
         self.env.globals["cfg"] = cfg
         self.env.globals["base"] = self.base
-        self.env.globals["asset_ver"] = str(int(dt.datetime.now().timestamp()))
+        self.env.globals["asset_ver"] = ""
 
     def render(self, template: str, **ctx) -> str:
         return self.env.get_template(template).render(**ctx)
 
     # -- 数据 --------------------------------------------------------------- #
-    def collect(self) -> list[dict]:
-        posts = []
+    def collect(self) -> list[Post]:
         pinned_numbers = self.gh.pinned_numbers()
+        posts: list[Post] = []
         for issue in self.gh.issues():
-            labels = issue.get("labels", [])
-            names = [l["name"] for l in labels]
-            pinned = issue["number"] in pinned_numbers or (
-                bool(self.pin_label) and self.pin_label in names
-            )
+            names = [label["name"] for label in issue.get("labels", [])]
             body = issue.get("body") or ""
-            created = dt.datetime.fromisoformat(
-                issue["created_at"].replace("Z", "+00:00")
-            ).astimezone(self.tz)
             posts.append(
-                {
-                    "number": issue["number"],
-                    "title": issue["title"],
-                    "body": self.md.render(body),
-                    "excerpt": plain_excerpt(body),
-                    "created": created,
-                    "date": created.strftime("%Y-%m-%d"),
-                    "year": created.strftime("%Y"),
-                    "url": f"{self.base}/post/{issue['number']}.html",
-                    "source": issue["html_url"],
-                    "pinned": pinned,
-                    "tags": [
-                        {"name": n, "slug": slugify(n)}
-                        for n in names
-                        if n not in self.exclude
-                    ],
-                }
+                Post(
+                    number=issue["number"],
+                    title=issue["title"],
+                    body=self.md.render(body),
+                    excerpt=plain_excerpt(body),
+                    created=self._local_time(issue["created_at"]),
+                    updated=self._local_time(issue["updated_at"]),
+                    date=self._local_time(issue["created_at"]).strftime("%Y-%m-%d"),
+                    year=self._local_time(issue["created_at"]).strftime("%Y"),
+                    url=f"{self.base}/post/{issue['number']}.html",
+                    source=issue["html_url"],
+                    pinned=issue["number"] in pinned_numbers
+                    or (bool(self.pin_label) and self.pin_label in names),
+                    tags=[Tag(name=n, slug=slugify(n)) for n in names if n not in self.exclude],
+                )
             )
-        posts.sort(key=lambda p: (p["pinned"], p["created"]), reverse=True)
+        posts.sort(key=lambda p: (p.pinned, p.created), reverse=True)
         return posts
 
-    def tags_index(self, posts: list[dict]) -> list[dict]:
-        buckets: dict[str, dict] = {}
+    def _local_time(self, value: str) -> dt.datetime:
+        return dt.datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(self.tz)
+
+    def _asset_ver(self, posts: list[Post]) -> str:
+        """资源版本 = 静态文件 + 模板 + 配置 + 正文的内容哈希。
+
+        内容不变时 URL 不变，浏览器缓存可复用。
+        """
+        digest = hashlib.sha1()
+        sources = sorted((ROOT / "static").rglob("*")) + sorted((ROOT / "templates").rglob("*"))
+        for path in sources:
+            if path.is_file():
+                digest.update(path.name.encode("utf-8"))
+                digest.update(path.read_bytes())
+        digest.update((ROOT / "config.json").read_bytes())
         for post in posts:
-            for tag in post["tags"]:
-                b = buckets.setdefault(
-                    tag["slug"], {"name": tag["name"], "slug": tag["slug"], "count": 0}
-                )
-                b["count"] += 1
-        return sorted(buckets.values(), key=lambda b: (-b["count"], b["name"]))
+            digest.update(f"{post.number}\n{post.title}\n{post.body}\n".encode())
+        return digest.hexdigest()[:8]
 
     # -- 页面 --------------------------------------------------------------- #
-    def build_posts(self, posts: list[dict]) -> None:
+    def build_posts(self, posts: list[Post]) -> None:
         post_dir = self.out / "post"
         post_dir.mkdir(parents=True, exist_ok=True)
         for post in posts:
             html_out = self.render("post.html", post=post)
-            (post_dir / f"{post['number']}.html").write_text(html_out, encoding="utf-8")
+            (post_dir / f"{post.number}.html").write_text(html_out, encoding="utf-8")
 
-    @staticmethod
-    def group_by_year(posts: list[dict]) -> list[dict]:
-        groups: list[dict] = []
-        for p in posts:
-            if not groups or groups[-1]["year"] != p["year"]:
-                groups.append({"year": p["year"], "posts": []})
-            groups[-1]["posts"].append(p)
-        return groups
-
-    def build_index(self, posts: list[dict]) -> None:
-        html_out = self.render("index.html", groups=self.group_by_year(posts))
+    def build_index(self, posts: list[Post]) -> None:
+        html_out = self.render("index.html", groups=group_by_year(posts))
         (self.out / "index.html").write_text(html_out, encoding="utf-8")
 
-    def build_tags(self, posts: list[dict], tags: list[dict]) -> None:
+    def build_tags(self, posts: list[Post], tags: list[Tag]) -> None:
         html_out = self.render("tags.html", posts=posts, tags=tags)
         (self.out / "tags.html").write_text(html_out, encoding="utf-8")
 
     def build_404(self) -> None:
         html_out = self.render("404.html")
         (self.out / "404.html").write_text(html_out, encoding="utf-8")
-
-    def build_rss(self, posts: list[dict]) -> None:
-        if not self.cfg.get("showRss", True):
-            return
-
-        def cdata(text: str) -> str:
-            return f"<![CDATA[{text}]]>"
-
-        items = []
-        for p in posts:
-            items.append(
-                "\n".join(
-                    [
-                        "    <item>",
-                        f"      <title>{html.escape(p['title'])}</title>",
-                        f"      <link>{p['url']}</link>",
-                        f"      <guid isPermaLink=\"true\">{p['url']}</guid>",
-                        f"      <pubDate>{p['created'].strftime('%a, %d %b %Y %H:%M:%S %z')}</pubDate>",
-                        f"      <description>{cdata(p['excerpt'])}</description>",
-                        "    </item>",
-                    ]
-                )
-            )
-        last = posts[0]["created"].strftime("%a, %d %b %Y %H:%M:%S %z") if posts else ""
-        xml = "\n".join(
-            [
-                '<?xml version="1.0" encoding="UTF-8"?>',
-                '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
-                "  <channel>",
-                f"    <title>{html.escape(self.cfg['title'])}</title>",
-                f"    <link>{self.base}</link>",
-                f"    <description>{html.escape(self.cfg['description'])}</description>",
-                f"    <language>{self.cfg.get('lang', 'zh-CN')}</language>",
-                f"    <lastBuildDate>{last}</lastBuildDate>",
-                f'    <atom:link href="{self.base}/rss.xml" rel="self" type="application/rss+xml"/>',
-                *items,
-                "  </channel>",
-                "</rss>",
-                "",
-            ]
-        )
-        (self.out / "rss.xml").write_text(xml, encoding="utf-8")
-
-    def build_sitemap(self, posts: list[dict]) -> None:
-        if not self.cfg.get("sitemap", True):
-            return
-        urls = [f"{self.base}/", f"{self.base}/tags.html"]
-        urls += [p["url"] for p in posts]
-        body = "\n".join(f"  <url><loc>{u}</loc></url>" for u in urls)
-        xml = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            f"{body}\n</urlset>\n"
-        )
-        (self.out / "sitemap.xml").write_text(xml, encoding="utf-8")
 
     def copy_static(self) -> None:
         src = ROOT / "static"
@@ -359,93 +268,14 @@ class Builder:
             shutil.rmtree(dst)
         if src.exists():
             shutil.copytree(src, dst)
-        # Pygments 代码高亮样式由 style.css 内联定义, 这里不额外生成。
-
-    # -- 字体：下载 → 按用字裁剪 → 自托管 ----------------------------------- #
-    def _download(self, url: str, dest: Path) -> bool:
-        if dest.exists() and dest.stat().st_size > 0:
-            return True
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            resp = self.gh.session.get(url, timeout=180)
-            resp.raise_for_status()
-            dest.write_bytes(resp.content)
-            return True
-        except requests.RequestException as exc:
-            log(f"  ! 字体下载失败 {url}: {exc}")
-            return False
-
-    @staticmethod
-    def _subset(src: Path, dest: Path, text: str) -> bool:
-        try:
-            subprocess.run(
-                [
-                    sys.executable, "-m", "fontTools.subset", str(src),
-                    f"--text={text}",
-                    "--flavor=woff2",
-                    f"--output-file={dest}",
-                    "--layout-features=*",
-                    "--no-hinting",
-                    "--name-IDs=*",
-                ],
-                check=True, capture_output=True,
-            )
-            return dest.exists() and dest.stat().st_size > 0
-        except (subprocess.CalledProcessError, OSError) as exc:
-            detail = exc.stderr.decode("utf-8", "ignore")[:200] if hasattr(exc, "stderr") and exc.stderr else exc
-            log(f"  ! 字体裁剪失败 {src.name}: {detail}")
-            return False
-
-    def _collect_text(self) -> str:
-        chars: set[str] = set()
-        for path in self.out.rglob("*.html"):
-            raw = path.read_text(encoding="utf-8", errors="ignore")
-            # 连同属性值 (placeholder / title / alt / content) 一并收集，避免漏字
-            chars.update(html.unescape(raw))
-        chars.update(" 0123456789.,:;·—…←→✳()[]%+-/@")
-        return "".join(sorted(c for c in chars if c == " " or c.isprintable()))
-
-    def build_fonts(self) -> None:
-        text = self._collect_text()
-        fontdir = self.out / "static" / "fonts"
-        fontdir.mkdir(parents=True, exist_ok=True)
-        rules: list[str] = []
-        total = 0
-        for (family, weight), url in LATIN_FONTS.items():
-            src = FONTCACHE / url.rsplit("/", 1)[-1]
-            local = fontdir / src.name
-            if self._download(url, src) and self._subset(src, local, text):
-                rules.append(
-                    f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
-                    f'font-display:swap;src:url("fonts/{local.name}") format("woff2")}}'
-                )
-                total += local.stat().st_size
-            else:
-                rules.append(
-                    f'@font-face{{font-family:"{family}";font-style:normal;font-weight:{weight};'
-                    f'font-display:swap;src:url("{url}") format("woff2")}}'
-                )
-        ttf = FONTCACHE / "LXGWWenKaiScreen.ttf"
-        local = fontdir / "lxgwwenkai-screen.woff2"
-        if self._download(CJK_TTF_URL, ttf) and self._subset(ttf, local, text):
-            rules.append(
-                f'@font-face{{font-family:"{CJK_FAMILY}";font-style:normal;font-weight:400;'
-                f'font-display:swap;src:url("fonts/{local.name}") format("woff2")}}'
-            )
-            total += local.stat().st_size
-            cjk = f"{local.stat().st_size / 1024:.0f} KB (裁剪自 {len(text)} 字)"
-        else:
-            rules.insert(0, f'@import url("{CJK_CDN_CSS}");')
-            cjk = "CDN 回退"
-        (self.out / "static" / "fonts.css").write_text("\n".join(rules) + "\n", encoding="utf-8")
-        log(f"  字体: {cjk}, 自托管合计 {total / 1024:.0f} KB")
 
     # -- 入口 --------------------------------------------------------------- #
     def run(self) -> None:
         log(f"→ 拉取 issues: {self.gh.repo}")
         posts = self.collect()
         log(f"  共 {len(posts)} 篇")
-        tags = self.tags_index(posts)
+        tags = tags_index(posts)
+        self.env.globals["asset_ver"] = self._asset_ver(posts)
 
         if self.out.exists():
             shutil.rmtree(self.out)
@@ -455,10 +285,11 @@ class Builder:
         self.build_index(posts)
         self.build_tags(posts, tags)
         self.build_404()
-        self.build_rss(posts)
-        self.build_sitemap(posts)
+        feeds.build_rss(posts, self.cfg, self.base, self.out)
+        feeds.build_sitemap(posts, self.cfg, self.base, self.out)
+        feeds.build_robots(self.base, self.out)
         self.copy_static()
-        self.build_fonts()
+        self.fonts.build()
         try:
             shown = self.out.relative_to(ROOT)
         except ValueError:
