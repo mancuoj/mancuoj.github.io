@@ -325,7 +325,7 @@ class Builder:
         feeds.build_robots(self.base, self.out)
         self.copy_static()
         self.fonts.build()
-        og.build(posts, self.out, self.cfg["author"])
+        og.build(posts, self.out, self.cfg)
         try:
             shown = self.out.relative_to(ROOT)
         except ValueError:
