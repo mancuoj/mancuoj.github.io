@@ -1,0 +1,68 @@
+[
+  {
+    "number": 7,
+    "title": "十月记",
+    "date": "2026-10-05",
+    "updated": "2026-10-10",
+    "tags": [
+      "notes"
+    ],
+    "url": "http://localhost:8137/post/7.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/7"
+  },
+  {
+    "number": 6,
+    "title": "九月记",
+    "date": "2026-09-02",
+    "updated": "2026-10-06",
+    "tags": [
+      "notes"
+    ],
+    "url": "http://localhost:8137/post/6.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/6"
+  },
+  {
+    "number": 5,
+    "title": "八月记",
+    "date": "2026-08-02",
+    "updated": "2026-10-07",
+    "tags": [
+      "notes"
+    ],
+    "url": "http://localhost:8137/post/5.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/5"
+  },
+  {
+    "number": 4,
+    "title": "七月记",
+    "date": "2026-07-01",
+    "updated": "2026-10-07",
+    "tags": [
+      "notes"
+    ],
+    "url": "http://localhost:8137/post/4.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/4"
+  },
+  {
+    "number": 3,
+    "title": "六月记",
+    "date": "2026-06-10",
+    "updated": "2026-10-06",
+    "tags": [
+      "notes"
+    ],
+    "url": "http://localhost:8137/post/3.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/3"
+  },
+  {
+    "number": 2,
+    "title": "CS61A 通关感想",
+    "date": "2026-06-10",
+    "updated": "2026-10-07",
+    "tags": [
+      "csdiy"
+    ],
+    "url": "http://localhost:8137/post/2.html",
+    "source": "https://github.com/mancuoj/mancuoj.github.io/issues/2"
+  }
+]
