@@ -73,7 +73,7 @@ jobs:
             echo "内容无变化，跳过提交"
           else
             git commit -m "chore: 更新内容备份 [skip ci]"
-            git push
+            git push origin HEAD:main
           fi
 
       - name: Setup Pages
