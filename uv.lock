@@ -428,20 +428,20 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "brotli", specifier = "==1.1.0" },
-    { name = "fonttools", extras = ["woff"], specifier = "==4.66.1" },
-    { name = "jinja2", specifier = "==3.1.4" },
-    { name = "linkify-it-py", specifier = "==2.0.3" },
-    { name = "markdown-it-py", specifier = "==3.0.0" },
-    { name = "mdit-py-plugins", specifier = "==0.4.2" },
-    { name = "pygments", specifier = "==2.18.0" },
-    { name = "requests", specifier = "==2.32.3" },
+    { name = "brotli", specifier = ">=1.1,<2" },
+    { name = "fonttools", extras = ["woff"], specifier = ">=4.66,<5" },
+    { name = "jinja2", specifier = ">=3.1,<4" },
+    { name = "linkify-it-py", specifier = ">=2,<3" },
+    { name = "markdown-it-py", specifier = ">=3,<5" },
+    { name = "mdit-py-plugins", specifier = ">=0.4,<1" },
+    { name = "pygments", specifier = ">=2.18,<3" },
+    { name = "requests", specifier = ">=2.32,<3" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pytest", specifier = "==9.1.1" },
-    { name = "ruff", specifier = "==0.17.0" },
+    { name = "pytest", specifier = ">=8,<10" },
+    { name = "ruff", specifier = ">=0.6,<1" },
 ]
 
 [[package]]
