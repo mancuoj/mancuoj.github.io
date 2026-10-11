@@ -3,6 +3,7 @@ name: Build blog
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
   issues:
     types:
@@ -23,7 +24,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -32,6 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     if: >-
       github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
       github.event_name == 'workflow_dispatch' ||
       github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -65,6 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit content backup
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -77,9 +80,11 @@ jobs:
           fi
 
       - name: Setup Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v6
 
       - name: Upload artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs
@@ -87,6 +92,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     environment:
       name: github-pages
